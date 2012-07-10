@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="ContentDescription">
+        <ignore path="res\layout\apod_picture.xml" />
+        <ignore path="res\layout\main.xml" />
+    </issue>
+</lint>
