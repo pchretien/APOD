@@ -204,7 +204,7 @@ public class APODActivity extends Activity //implements OnClickListener
 	        // Load the APOD for a specific date
         	case R.id.menu_set_date:
         		// Load the date picker. The new date will be set in the callback function
-        		Calendar calendar = GregorianCalendar.getInstance();
+        		Calendar calendar = apodData.getDate();
         		DatePickerDialog datePicker = new DatePickerDialog(
         				this,
         				mDateSetListener,
@@ -301,10 +301,22 @@ public class APODActivity extends Activity //implements OnClickListener
 		@Override
 		protected Void doInBackground(Calendar... params)
 		{
-			if(params[0].after(Calendar.getInstance()))
+			// Never load an APOD for a date after today ...
+			Calendar newDate = params[0];
+			int y = newDate.get(Calendar.YEAR);
+			int m = newDate.get(Calendar.MONTH);
+			int d = newDate.get(Calendar.DATE);
+				
+			if(y<1995)
 				return null;
-
-			app.getDataProvider().getAPODByDate(params[0]);
+			
+			if(y == 1995 && m < 5)
+				return null;
+			
+			if(y == 1995 && m == 5 && d < 20 && d != 16)
+				return null;
+			
+			app.getDataProvider().getAPODByDate(newDate);
 			return null;
 		}
 

@@ -176,16 +176,9 @@ public class APODDataProvider
 		if(start == -1)
 			return page;
 
-    	int stop = page.substring(start).toUpperCase().indexOf(">")+start+1;
-    	page = page.substring(0, start) + page.substring(stop);
-
-    	// Remove the Site Title
-    	start = page.toUpperCase().indexOf("<CENTER>");
-		if(start == -1)
-			return page;
-
-    	stop = page.substring(start).toUpperCase().indexOf("</CENTER>")+start+9;
-    	page = page.substring(0, start) + page.substring(stop);
+    	start = page.substring(start).toUpperCase().indexOf(">")+start+1;
+    	int stop = page.substring(start).toUpperCase().indexOf("<HR>")+start;
+    	page = "<html>" + page.substring(start, stop) + "</html>";
 
     	return page;
 	}
