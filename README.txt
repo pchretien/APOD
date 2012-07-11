@@ -2,7 +2,8 @@
 -- APOD--
 -------------------------------------------------------------------------------
 
-This project is an Android client to visualize the Astronomy Picture Of The Day (APOD) published by NASA at http://apod.nasa.gov/apod/. This project is free of charges and have been developed with the objective to learn Android programmation.
+This project is an Android client to visualize the Astronomy Picture Of The Day (APOD) published by NASA at http://apod.nasa.gov/apod/. This project is free of charges and have been developed with the objective to 
+learn Android programming.
 
 You will find the latest version of this code at the following address:
 http://github.com/pchretien
@@ -15,4 +16,4 @@ philippe.chretien at gmail.com
 
 Thank you,
 
-Philippe Chrétien
+Philippe Chrï¿½tien
