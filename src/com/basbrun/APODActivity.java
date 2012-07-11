@@ -55,7 +55,7 @@ import android.widget.Toast;
 
 // APODActivity is the main application activity. The APOD are displayed trough
 // this activity. The menu and all gestures are bound to this activity.
-public class APODActivity extends Activity implements OnClickListener
+public class APODActivity extends Activity //implements OnClickListener
 {
 
 	// Reference to the APODApplication to get access to the APODDataProvider
@@ -85,6 +85,14 @@ public class APODActivity extends Activity implements OnClickListener
 
         // Get a reference to the currently loaded APOD
         apodData = app.getDataProvider().getAPOD();
+        
+        // Change the Activity title ...
+        String title = String.format(
+        		"APOD (%d/%02d/%02d)", 
+        		apodData.getDate().get(Calendar.YEAR), 
+        		apodData.getDate().get(Calendar.MONTH)+1, 
+        		apodData.getDate().get(Calendar.DATE));
+        setTitle(title);
 
         // Find the text view on the activity layout
     	TextView textView = (TextView)findViewById(R.id.textViewPath);
@@ -111,6 +119,7 @@ public class APODActivity extends Activity implements OnClickListener
 				"text/html",
 				null,
 				null);
+        webView.setOnTouchListener(gestureListener);
 
         // Initialize the Activity fields depending on the type of data loaded
         // from the APOD website
@@ -357,11 +366,5 @@ public class APODActivity extends Activity implements OnClickListener
             return false;
         }
     }
-
-	public void onClick(View v)
-	{
-		// TODO Auto-generated method stub
-		// To make the compiler happy ...
-	}
 }
 
