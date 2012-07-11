@@ -35,6 +35,7 @@ import android.graphics.BitmapFactory;
 
 public class HttpFetch
 {
+	// Get an HTML page content ...
 	public static String GetHtml(String path)
 	{
 		String pageSource = "";
@@ -62,6 +63,7 @@ public class HttpFetch
 		return pageSource;
 	}
 
+	// Download a bitmap ...
 	public static Bitmap getBitmap(String src)
 	{
 		try

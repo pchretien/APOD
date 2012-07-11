@@ -29,6 +29,7 @@ package com.basbrun;
 
 public class Parser
 {
+	// Find the first occurence of a specific element and return it's SRC attribute value
 	public static String FindFirstElementSrc(String html, String elementType)
 	{
 		int elementStart = html.toUpperCase().indexOf("<"+elementType.toUpperCase());

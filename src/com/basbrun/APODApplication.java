@@ -29,6 +29,12 @@ package com.basbrun;
 
 import android.app.Application;
 
+// The APODApplication class contains a reference to a unique data provider 
+// All the communications to the web server are made trough this data provider
+// singleton.
+//
+// One must change the AndroidManifest.xml file to set this class as the main
+// application file. android:name="com.basbrun.APODApplication"
 public class APODApplication extends Application
 {
 	private static APODDataProvider dataProvider= new APODDataProvider();

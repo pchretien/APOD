@@ -29,7 +29,6 @@ package com.basbrun;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -54,18 +53,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+// APODActivity is the main application activity. The APOD are displayed trough
+// this activity. The menu and all gestures are bound to this activity.
 public class APODActivity extends Activity implements OnClickListener
 {
 
+	// Reference to the APODApplication to get access to the APODDataProvider
 	private APODApplication app = null;
+	
+	// A reference to the current APODData downloaded from the website
+	// This data is obtained trough the data provider
 	private APODData apodData = null;
 
-	private static final int SWIPE_MIN_DISTANCE = 120;
+	// Constants and listeners for gesture detection
+	private static final int SWIPE_MIN_DISTANCE = 60;
     private static final int SWIPE_MAX_OFF_PATH = 250;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
     private GestureDetector gestureDetector;
     private View.OnTouchListener gestureListener;
 
+    // The wait spinner dialog
     private ProgressDialog progressDialog;
 
     @Override
@@ -76,13 +83,19 @@ public class APODActivity extends Activity implements OnClickListener
         // Get a reference to the Application main class
         app = (APODApplication)getApplication();
 
-        // Get a reference to the loded APOD
+        // Get a reference to the currently loaded APOD
         apodData = app.getDataProvider().getAPOD();
 
+        // Find the text view on the activity layout
     	TextView textView = (TextView)findViewById(R.id.textViewPath);
+    	
+    	// Find the image view on the activity layout
     	ImageView imgView = (ImageView)findViewById(R.id.imageViewAPOD);
+    	
+    	// Find the web view on the activity layout
+    	WebView webView = (WebView) findViewById(R.id.webViewDescription);
 
-    	// Gesture detection
+    	// Gesture detection callback methods
         gestureDetector = new GestureDetector(new APODGestureDetector());
         gestureListener = new View.OnTouchListener()
         {
@@ -91,78 +104,97 @@ public class APODActivity extends Activity implements OnClickListener
                 return gestureDetector.onTouchEvent(event);
             }
         };
-
-    	switch(apodData.getApodDataType())
-    	{
-    	case IMG:
-    		textView.setText(apodData.getPagePath());
-    		imgView.setImageBitmap(apodData.getBitmap());
-    		imgView.setOnClickListener(onPictureClick);
-            imgView.setOnTouchListener(gestureListener);
-    		break;
-
-    	case IFRAME:
-    		textView.setText(apodData.getPagePath());
-    		imgView.setImageResource(R.drawable.play);
-    		imgView.setOnClickListener(onVideoClick);
-    		imgView.setOnTouchListener(gestureListener);
-    		break;
-
-    	case NONE:
-    		textView.setText(apodData.getPagePath());
-    		break;
-
-    	case ERROR:
-    		textView.setText(apodData.getError());
-    		break;
-    	}
-
-    	WebView webView = (WebView) findViewById(R.id.webViewDescription);
-    	webView.loadDataWithBaseURL(app.getDataProvider().getDomainRoot(),
+        
+        // Load the APOD description into the Activity webview
+        webView.loadDataWithBaseURL(app.getDataProvider().getDomainRoot(),
 				apodData.getDescription(),
 				"text/html",
 				null,
 				null);
+
+        // Initialize the Activity fields depending on the type of data loaded
+        // from the APOD website
+    	switch(apodData.getApodDataType())
+    	{
+    		// Standard image
+	    	case IMG:
+	    		textView.setText(apodData.getPagePath());
+	    		imgView.setImageBitmap(apodData.getBitmap());
+	    		imgView.setOnClickListener(onPictureClick);
+	            imgView.setOnTouchListener(gestureListener);
+	    		break;
+	
+	    	// Most of the <iframe/> elements contains YouTube videos
+	    	case IFRAME:
+	    		textView.setText(apodData.getPagePath());
+	    		imgView.setImageResource(R.drawable.play);
+	    		imgView.setOnClickListener(onVideoClick);
+	    		imgView.setOnTouchListener(gestureListener);
+	    		break;
+	
+	    	// Undefined contend ...
+	    	case NONE:
+	    		textView.setText(apodData.getPagePath());
+	    		break;
+	
+	    	// Reporting errors to the user ...
+	    	case ERROR:
+	    		textView.setText(apodData.getError());
+	    		break;
+    	}    	
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) 
+    {
+    	// Pump the xml menu definition to the Activity menu
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.apod_menu, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
+    public boolean onOptionsItemSelected(MenuItem item) 
+    {
     	Calendar date;
     	TextView aboutMsg;
-        switch (item.getItemId()) {
-
-	        case R.id.menu_previous:
+        switch (item.getItemId()) 
+        {
+        	// Load the APOD for the day before the current APOD
+    	    case R.id.menu_previous:
+	        	// Start the spinner
 	        	progressDialog = ProgressDialog.show(APODActivity.this, APODActivity.this.getResources().getString(R.string.loading), APODActivity.this.getResources().getString(R.string.loading_your));
 
+	        	// Load the APOD
 	        	date = (Calendar)apodData.getDate().clone();
                 date.add(Calendar.DATE, -1);
                 new APODAsyncLoad().execute(date);
 	            return true;
 
+	        // Load today's APOD
 	        case R.id.menu_today:
+	        	// Start the spinner
 	        	progressDialog = ProgressDialog.show(APODActivity.this, APODActivity.this.getResources().getString(R.string.loading), APODActivity.this.getResources().getString(R.string.loading_your));
 
+	        	// Load the APOD
 	        	date = GregorianCalendar.getInstance();
 	        	new APODAsyncLoad().execute(date);
 	            return true;
 
+	        // Load the APOD for the day after the current APOD
 	        case R.id.menu_next:
+	        	// Start the spinner
 	        	progressDialog = ProgressDialog.show(APODActivity.this, APODActivity.this.getResources().getString(R.string.loading), APODActivity.this.getResources().getString(R.string.loading_your));
 
+	        	// Load the APOD
 	        	date = (Calendar)apodData.getDate().clone();
                 date.add(Calendar.DATE, 1);
                 new APODAsyncLoad().execute(date);
 	            return true;
 
+	        // Load the APOD for a specific date
         	case R.id.menu_set_date:
+        		// Load the date picker. The new date will be set in the callback function
         		Calendar calendar = GregorianCalendar.getInstance();
         		DatePickerDialog datePicker = new DatePickerDialog(
         				this,
@@ -175,6 +207,7 @@ public class APODActivity extends Activity implements OnClickListener
 
                 return true;
 
+            // Not yet implemented
         	case R.id.menu_settings:
         		new AlertDialog.Builder(this)
         		.setMessage("Settings")
@@ -182,8 +215,10 @@ public class APODActivity extends Activity implements OnClickListener
         		.show();
 
                 return true;
-
+            
+            // Credits ...
         	case R.id.menu_about:
+        		
         		aboutMsg = new TextView(this);
         		aboutMsg.setText(" Copyright Philippe Chretien (2012) \nwww.basbrun.com");
         		aboutMsg.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -200,10 +235,13 @@ public class APODActivity extends Activity implements OnClickListener
         }
     }
 
+    // Listener for the DatePickerDialog. This date picker is called when selecting @Set Date@ from the
+    // menu. If the Set button is clicked, the date from the date picker is used to load a precise APOD.
     private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener()
 	{
 		public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth)
 		{
+			// Start the spinner
 			progressDialog = ProgressDialog.show(APODActivity.this, APODActivity.this.getResources().getString(R.string.loading), APODActivity.this.getResources().getString(R.string.loading_your));
 
 			Calendar date = GregorianCalendar.getInstance();
@@ -212,6 +250,7 @@ public class APODActivity extends Activity implements OnClickListener
 		}
     };
 
+    // Called when the date picker Cancel button is pressed or when the dialog is dismissed.
     private DialogInterface.OnDismissListener mDismissListener = new DialogInterface.OnDismissListener()
     {
     	public void onDismiss(DialogInterface dialog)
@@ -220,6 +259,9 @@ public class APODActivity extends Activity implements OnClickListener
 		}
     };
 
+    // Called when a user click on the picture. This brings the picture in a webview
+    // An hyperlink in the webview will bring the user to the APOD website if the 
+    // picture is clicked.
     private OnClickListener onPictureClick = new OnClickListener()
     {
         public void onClick(View v)
@@ -229,6 +271,8 @@ public class APODActivity extends Activity implements OnClickListener
         }
     };
 
+    // Called when the user click on the Play Button picture. This picture is used
+    // to display a video instead of a picture.
     private OnClickListener onVideoClick = new OnClickListener()
     {
         public void onClick(View v)
@@ -242,6 +286,7 @@ public class APODActivity extends Activity implements OnClickListener
         }
     };
 
+    // Load the requested APOD asynchronously 
     class APODAsyncLoad extends AsyncTask<Calendar, Void, Void>
     {
 		@Override
@@ -264,6 +309,9 @@ public class APODActivity extends Activity implements OnClickListener
 		}
     }
 
+    // Gesture detector to detect the left and right Fling gestures on the picture.
+    // The left Fling brings the APOD of the previous day and the right Fling brings
+    // the APOD of the next day.
     class APODGestureDetector extends SimpleOnGestureListener
     {
         @Override
@@ -313,6 +361,7 @@ public class APODActivity extends Activity implements OnClickListener
 	public void onClick(View v)
 	{
 		// TODO Auto-generated method stub
+		// To make the compiler happy ...
 	}
 }
 

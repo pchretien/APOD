@@ -31,9 +31,11 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.webkit.WebView;
 
+// The APODPictureActivity allows to view the picture in full size.
+// The APOD FULL picture is not loaded here in order to avoid out of
+// memory problems for low end devices.
 public class APODPictureActivity extends Activity
 {
-
 	private APODApplication app = null;
 	private APODData apodData = null;
 
@@ -46,6 +48,7 @@ public class APODPictureActivity extends Activity
 	    app = (APODApplication)getApplication();
         apodData = app.getDataProvider().getAPOD();
 
+        // Build a specific webpage with a selectable anchor leading to the current APOD page.
         String htmlPage = String.format("<html><a href=\"%s\"><img src=\"%s\"/></a></html>", apodData.getPagePath(), apodData.getSrc());
         WebView webView = (WebView) findViewById(R.id.webViewPicture);
         webView.loadData(htmlPage, "text/html", null);

@@ -32,41 +32,52 @@ import java.util.GregorianCalendar;
 
 import android.graphics.Bitmap;
 
-
+// The APODDataProvider is the link between the application and the APOD website 
+// where all the data is. This class is instantiated in the APODApplication class 
+// as a singleton.
 public class APODDataProvider
 {
+	private APODData apodData = null;
 	private String domainRoot = "http://apod.nasa.gov/apod/";
+	
+	// Return the base url of the APOD website
 	public String getDomainRoot()
 	{
 		return domainRoot;
-	}
+	}	
 
-	private APODData apodData = null;
-
+	// Return the current APOD data
 	public APODData getAPOD()
 	{
+		// If no APOD has been loaded a call to the web server is made to get the data
 		if(apodData == null)
 			getAPODByDate(GregorianCalendar.getInstance());
 
 		return apodData;
 	}
 
+	// Return the APOD data for a specific day
 	public APODData getAPODByDate(Calendar date)
 	{
+		// Extract the Calendar date
 		int iYear = (date.get(Calendar.YEAR)<2000)?date.get(Calendar.YEAR)-1900:date.get(Calendar.YEAR)-2000;
 		int iMonth = date.get(Calendar.MONTH)+1; // Month is zero based ...
 		int iDay = date.get(Calendar.DATE);
 
+		// Build the html file name to load
 		String path = String.format("ap%02d%02d%02d.html", iYear, iMonth, iDay);
 
+		// If the data currently loaded is the same as the one requested nothing is done
 		if(apodData != null && apodData.getDate().equals(date))
 			return apodData;
 
+		// Initialization
 		String src = null;
 		String error = "";
 		String description = "";
 		APODData.ApodContentType apodContentType = APODData.ApodContentType.NONE;
 
+		// Get the APOD web page HTML content 
 		String page = HttpFetch.GetHtml(domainRoot + path);
 		if(page == null)
 		{
@@ -76,21 +87,26 @@ public class APODDataProvider
 
 		if(page != null)
 		{
+			// Parse the page to find an <IMG/> element
 			src = Parser.FindFirstElementSrc(page, "IMG");
 
 			if(src != null)
 			{
+				// Load the HTML text and set the APOD type
 				src = domainRoot + src;
-				description = this.getDescription(domainRoot + path, "IMG");
+				description = this.getDescription(page, "IMG");
 				apodContentType = APODData.ApodContentType.IMG;
 			}
 			else
 			{
+				// If no <IMG/> element is found, parse the page to 
+				// find an <IFRAME> element
 				src = Parser.FindFirstElementSrc(page, "IFRAME");
 
 				if(src != null)
 				{
-					description = this.getDescription(domainRoot + path, "IFRAME");
+					// Load the HTML text and set the APOD type
+					description = this.getDescription(page, "IFRAME");
 					apodContentType = APODData.ApodContentType.IFRAME;
 				}
 			}
@@ -99,9 +115,11 @@ public class APODDataProvider
 				apodContentType = APODData.ApodContentType.NONE;
 		}
 
+		// Instantiate the right APODData object.
 		switch(apodContentType)
 		{
 		case IMG:
+			// Instantiate an APODData for a picture type APOD
 			Bitmap bmp = HttpFetch.getBitmap(src);
 			apodData = new APODData(
 					apodContentType,
@@ -115,6 +133,7 @@ public class APODDataProvider
 			break;
 
 		case IFRAME:
+			// Instantiate an APODData for a video type APOD
 			apodData = new APODData(
 					apodContentType,
 					date,
@@ -127,6 +146,7 @@ public class APODDataProvider
 			break;
 
 		case ERROR:
+			// Return an error
 			apodData = new APODData(
 					apodContentType,
 					date,
@@ -146,10 +166,11 @@ public class APODDataProvider
 		return apodData;
 	}
 
-	private String getDescription(String path, String element)
+	// Parse the HTML file to extract the APOD description and remove unnecessary text
+	private String getDescription(String pageIn, String element)
 	{
-		String page = HttpFetch.GetHtml(path);
-
+		String page = pageIn;
+		
 		// Remove the IMG element
 		int start = page.toUpperCase().indexOf("<"+element.toUpperCase());
 		if(start == -1)

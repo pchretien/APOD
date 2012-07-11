@@ -33,6 +33,7 @@ import android.graphics.Bitmap;
 
 public class APODData
 {
+	// Type of APOD contend. IFRAME refer to YouTybe videos most of the time
 	public enum ApodContentType
 	{
 		IMG,
@@ -41,19 +42,31 @@ public class APODData
 		ERROR
 	}
 
+	// The type of the current APOD
 	private ApodContentType apodDataType;
-
+	
+	// The date of the currently displayed APOD
 	private Calendar date;
 
+	// The image, if any, of the current APOD picture
 	private Bitmap bitmap;
+	
+	// The source url of the current APOD
 	private String src;
 
+	// The html content of the current APOD page
 	private String page;
+	
+	// The full url of the current APOD web page
 	private String pagePath;
+	
+	// A modified version of the HTML content of the current APOD
 	private String description;
 
+	// Error message if any
 	private String error;
 
+	// ctr
 	public APODData(
 			ApodContentType apodDataType,
 			Calendar date,
