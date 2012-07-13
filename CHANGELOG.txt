@@ -1,4 +1,4 @@
-v0.2
+v0.2 (2012-07-13)
 - Removed the full path from the top of the main Activity
 - Picture and HTML caching on the /sdcard
 - Loading the picture WebView from the image on the /sdcard
