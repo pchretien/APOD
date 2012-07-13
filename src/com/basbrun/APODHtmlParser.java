@@ -27,7 +27,7 @@
 
 package com.basbrun;
 
-public class Parser
+public class APODHtmlParser
 {
 	// Find the first occurence of a specific element and return it's SRC attribute value
 	public static String FindFirstElementSrc(String html, String elementType)
@@ -42,5 +42,22 @@ public class Parser
 		src = src.substring(0, src.toUpperCase().indexOf("\""));
 
 		return src;
+	}
+	
+	// Parse the HTML file to extract the APOD description and remove unnecessary text
+	public static String getDescription(String pageIn, String element)
+	{
+		String page = pageIn;
+		
+		// Remove the IMG element
+		int start = page.toUpperCase().indexOf("<"+element.toUpperCase());
+		if(start == -1)
+			return page;
+
+    	start = page.substring(start).toUpperCase().indexOf(">")+start+1;
+    	int stop = page.substring(start).toUpperCase().indexOf("<HR>")+start;
+    	page = "<html>" + page.substring(start, stop) + "</html>";
+
+    	return page;
 	}
 }

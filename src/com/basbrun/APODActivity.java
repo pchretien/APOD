@@ -114,7 +114,7 @@ public class APODActivity extends Activity //implements OnClickListener
         };
         
         // Load the APOD description into the Activity webview
-        webView.loadDataWithBaseURL(app.getDataProvider().getDomainRoot(),
+        webView.loadDataWithBaseURL(app.getDataProvider().getAPODRoot(),
 				apodData.getDescription(),
 				"text/html",
 				null,
@@ -151,6 +151,8 @@ public class APODActivity extends Activity //implements OnClickListener
 	    		textView.setText(apodData.getError());
 	    		break;
     	}    	
+    	
+    	textView.setVisibility(TextView.INVISIBLE);
     }
 
     @Override

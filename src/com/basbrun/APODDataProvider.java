@@ -38,13 +38,11 @@ import android.graphics.Bitmap;
 public class APODDataProvider
 {
 	private APODData apodData = null;
-	private String domainRoot = "http://apod.nasa.gov/apod/";
 	
-	// Return the base url of the APOD website
-	public String getDomainRoot()
+	public String getAPODRoot()
 	{
-		return domainRoot;
-	}	
+		return APODDataConnector.getDomainRoot();
+	}
 
 	// Return the current APOD data
 	public APODData getAPOD()
@@ -59,18 +57,10 @@ public class APODDataProvider
 	// Return the APOD data for a specific day
 	public APODData getAPODByDate(Calendar date)
 	{
-		// Extract the Calendar date
-		int iYear = (date.get(Calendar.YEAR)<2000)?date.get(Calendar.YEAR)-1900:date.get(Calendar.YEAR)-2000;
-		int iMonth = date.get(Calendar.MONTH)+1; // Month is zero based ...
-		int iDay = date.get(Calendar.DATE);
-
-		// Build the html file name to load
-		String path = String.format("ap%02d%02d%02d.html", iYear, iMonth, iDay);
-
 		// If the data currently loaded is the same as the one requested nothing is done
 		if(apodData != null && apodData.getDate().equals(date))
 			return apodData;
-
+		
 		// Initialization
 		String src = null;
 		String error = "";
@@ -78,35 +68,29 @@ public class APODDataProvider
 		APODData.ApodContentType apodContentType = APODData.ApodContentType.NONE;
 
 		// Get the APOD web page HTML content 
-		String page = HttpFetch.GetHtml(domainRoot + path);
-		if(page == null)
-		{
-			apodContentType = APODData.ApodContentType.ERROR;
-			error = "Unable to load page " + domainRoot + path;
-		}
-
+		String page = APODDataConnector.GetHtml(date);
 		if(page != null)
 		{
 			// Parse the page to find an <IMG/> element
-			src = Parser.FindFirstElementSrc(page, "IMG");
+			src = APODHtmlParser.FindFirstElementSrc(page, "IMG");
 
 			if(src != null)
 			{
 				// Load the HTML text and set the APOD type
-				src = domainRoot + src;
-				description = this.getDescription(page, "IMG");
+				src = APODDataConnector.getDomainRoot() + src;
+				description = APODHtmlParser.getDescription(page, "IMG");
 				apodContentType = APODData.ApodContentType.IMG;
 			}
 			else
 			{
 				// If no <IMG/> element is found, parse the page to 
 				// find an <IFRAME> element
-				src = Parser.FindFirstElementSrc(page, "IFRAME");
+				src = APODHtmlParser.FindFirstElementSrc(page, "IFRAME");
 
 				if(src != null)
 				{
 					// Load the HTML text and set the APOD type
-					description = this.getDescription(page, "IFRAME");
+					description = APODHtmlParser.getDescription(page, "IFRAME");
 					apodContentType = APODData.ApodContentType.IFRAME;
 				}
 			}
@@ -119,17 +103,17 @@ public class APODDataProvider
 		switch(apodContentType)
 		{
 		case IMG:
-			// Instantiate an APODData for a picture type APOD
-			Bitmap bmp = HttpFetch.getBitmap(src);
+			Bitmap bmp = APODDataConnector.getBitmap(date, src);				
 			apodData = new APODData(
 					apodContentType,
 					date,
 					bmp,
 					src,
 					page,
-					domainRoot + path,
+					APODDataConnector.getDomainRoot() + APODDataConnector.formatFileName(date, "html", "ap"),
 					description,
-					error);
+					error);			
+			
 			break;
 
 		case IFRAME:
@@ -140,7 +124,7 @@ public class APODDataProvider
 					null,
 					src,
 					page,
-					domainRoot + path,
+					APODDataConnector.getDomainRoot() + APODDataConnector.formatFileName(date, "html", "ap"),
 					description,
 					error);
 			break;
@@ -153,7 +137,7 @@ public class APODDataProvider
 					null,
 					null,
 					null,
-					domainRoot + path,
+					APODDataConnector.getDomainRoot() + APODDataConnector.formatFileName(date, "html", "ap"),
 					description,
 					error);
 			break;
@@ -161,25 +145,13 @@ public class APODDataProvider
 		case NONE:
 			apodData = null;
 			break;
-		}
+		}		
 
 		return apodData;
 	}
-
-	// Parse the HTML file to extract the APOD description and remove unnecessary text
-	private String getDescription(String pageIn, String element)
+	
+	public String getBitmapPathFromCache(Calendar date)
 	{
-		String page = pageIn;
-		
-		// Remove the IMG element
-		int start = page.toUpperCase().indexOf("<"+element.toUpperCase());
-		if(start == -1)
-			return page;
-
-    	start = page.substring(start).toUpperCase().indexOf(">")+start+1;
-    	int stop = page.substring(start).toUpperCase().indexOf("<HR>")+start;
-    	page = "<html>" + page.substring(start, stop) + "</html>";
-
-    	return page;
+		return APODDataConnector.getBitmapPathFromCache(date);		
 	}
 }

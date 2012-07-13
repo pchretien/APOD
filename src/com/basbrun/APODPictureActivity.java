@@ -45,12 +45,21 @@ public class APODPictureActivity extends Activity
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.apod_picture);
 
-	    app = (APODApplication)getApplication();
+	    app = (APODApplication)getApplication();	    
         apodData = app.getDataProvider().getAPOD();
 
-        // Build a specific webpage with a selectable anchor leading to the current APOD page.
-        String htmlPage = String.format("<html><a href=\"%s\"><img src=\"%s\"/></a></html>", apodData.getPagePath(), apodData.getSrc());
+        String src = app.getDataProvider().getBitmapPathFromCache(apodData.getDate());
+        if(src != null)
+        	src = "file:/" + src;
+        else
+        	src = apodData.getSrc();
+        
+        String htmlPage = String.format("<html><body><a href=\"%s\"><img src=\"%s\"/></a></body></html>", apodData.getPagePath(), src);
+        
         WebView webView = (WebView) findViewById(R.id.webViewPicture);
-        webView.loadData(htmlPage, "text/html", null);
+        webView.getSettings().setAllowFileAccess(true);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.loadDataWithBaseURL("", htmlPage, "text/html", "utf-8", "");
 	}
 }
