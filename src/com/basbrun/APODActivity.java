@@ -29,6 +29,7 @@ package com.basbrun;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -36,7 +37,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -179,7 +179,7 @@ public class APODActivity extends Activity //implements OnClickListener
 	        	// Load the APOD
 	        	date = (Calendar)apodData.getDate().clone();
                 date.add(Calendar.DATE, -1);
-                new APODAsyncLoad().execute(date);
+                new APODAsyncLoader(this, progressDialog, 0).execute(date);
 	            return true;
 
 	        // Load today's APOD
@@ -189,7 +189,7 @@ public class APODActivity extends Activity //implements OnClickListener
 
 	        	// Load the APOD
 	        	date = GregorianCalendar.getInstance();
-	        	new APODAsyncLoad().execute(date);
+	        	new APODAsyncLoader(this, progressDialog, 0).execute(date);
 	            return true;
 
 	        // Load the APOD for the day after the current APOD
@@ -200,7 +200,7 @@ public class APODActivity extends Activity //implements OnClickListener
 	        	// Load the APOD
 	        	date = (Calendar)apodData.getDate().clone();
                 date.add(Calendar.DATE, 1);
-                new APODAsyncLoad().execute(date);
+                new APODAsyncLoader(this, progressDialog, 0).execute(date);
 	            return true;
 
 	        // Load the APOD for a specific date
@@ -257,7 +257,7 @@ public class APODActivity extends Activity //implements OnClickListener
 
 			Calendar date = GregorianCalendar.getInstance();
 			date.set(year, monthOfYear, dayOfMonth);
-        	new APODAsyncLoad().execute(date);
+        	new APODAsyncLoader(APODActivity.this, progressDialog, 0).execute(date);
 		}
     };
 
@@ -297,41 +297,6 @@ public class APODActivity extends Activity //implements OnClickListener
         }
     };
 
-    // Load the requested APOD asynchronously 
-    class APODAsyncLoad extends AsyncTask<Calendar, Void, Void>
-    {
-		@Override
-		protected Void doInBackground(Calendar... params)
-		{
-			// Never load an APOD for a date after today ...
-			Calendar newDate = params[0];
-			int y = newDate.get(Calendar.YEAR);
-			int m = newDate.get(Calendar.MONTH);
-			int d = newDate.get(Calendar.DATE);
-				
-			if(y<1995)
-				return null;
-			
-			if(y == 1995 && m < 5)
-				return null;
-			
-			if(y == 1995 && m == 5 && d < 20 && d != 16)
-				return null;
-			
-			app.getDataProvider().getAPODByDate(newDate);
-			return null;
-		}
-
-		protected void onPostExecute(Void result)
-		{
-			if(progressDialog != null)
-				progressDialog.dismiss();
-
-			startActivity(new Intent(APODActivity.this, APODActivity.class));
-	        APODActivity.this.finish();
-		}
-    }
-
     // Gesture detector to detect the left and right Fling gestures on the picture.
     // The left Fling brings the APOD of the previous day and the right Fling brings
     // the APOD of the next day.
@@ -355,7 +320,7 @@ public class APODActivity extends Activity //implements OnClickListener
 
                 	Calendar date = (Calendar)apodData.getDate().clone();
                     date.add(Calendar.DATE, 1);
-                    new APODAsyncLoad().execute(date);
+                    new APODAsyncLoader(APODActivity.this, progressDialog, 0).execute(date);
 
                     // This is a valid fling
                     return true;
@@ -366,7 +331,7 @@ public class APODActivity extends Activity //implements OnClickListener
 
                     Calendar date = (Calendar)apodData.getDate().clone();
                     date.add(Calendar.DATE, -1);
-                    new APODAsyncLoad().execute(date);
+                    new APODAsyncLoader(APODActivity.this, progressDialog, 0).execute(date);
 
                     // This is a valid fling
                     return true;

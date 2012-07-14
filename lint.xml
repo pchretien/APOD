@@ -2,6 +2,7 @@
 <lint>
     <issue id="ContentDescription">
         <ignore path="res\layout\apod_picture.xml" />
+        <ignore path="res\layout\apod_splash_screen.xml" />
         <ignore path="res\layout\main.xml" />
     </issue>
 </lint>

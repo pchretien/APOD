@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:name="com.basbrun.APODApplication" >
         <activity
-            android:name=".APODActivity"	
+            android:name=".APODSplashScreenActivity"	
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,6 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".APODPictureActivity"></activity>
+        <activity android:name="APODActivity"></activity>
     </application>
 
 </manifest>
