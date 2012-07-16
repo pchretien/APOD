@@ -16,22 +16,22 @@ public final class R {
         public static final int play=0x7f020002;
     }
     public static final class id {
-        public static final int creditsText=0x7f070002;
-        public static final int imageViewAPOD=0x7f070003;
+        public static final int creditsText=0x7f070004;
+        public static final int imageViewAPOD=0x7f070000;
         public static final int menu_about=0x7f07000a;
         public static final int menu_next=0x7f070007;
         public static final int menu_previous=0x7f070005;
         public static final int menu_set_date=0x7f070008;
         public static final int menu_settings=0x7f070009;
         public static final int menu_today=0x7f070006;
-        public static final int splashScreenImage=0x7f070001;
-        public static final int webViewDescription=0x7f070004;
-        public static final int webViewPicture=0x7f070000;
+        public static final int splashScreenImage=0x7f070003;
+        public static final int webViewDescription=0x7f070001;
+        public static final int webViewPicture=0x7f070002;
     }
     public static final class layout {
-        public static final int apod_picture=0x7f030000;
-        public static final int apod_splash_screen=0x7f030001;
-        public static final int main=0x7f030002;
+        public static final int apod_main=0x7f030000;
+        public static final int apod_picture=0x7f030001;
+        public static final int apod_splash_screen=0x7f030002;
     }
     public static final class menu {
         public static final int apod_menu=0x7f060000;

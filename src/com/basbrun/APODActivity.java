@@ -78,7 +78,7 @@ public class APODActivity extends Activity //implements OnClickListener
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.apod_main);
 
         // Get a reference to the Application main class
         app = (APODApplication)getApplication();
