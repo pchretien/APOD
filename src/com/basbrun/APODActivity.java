@@ -48,6 +48,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -93,6 +94,30 @@ public class APODActivity extends Activity //implements OnClickListener
         		apodData.getDate().get(Calendar.MONTH)+1, 
         		apodData.getDate().get(Calendar.DATE));
         setTitle(title);
+        
+        Button previousButton = (Button)this.findViewById(R.id.button_prev);
+        previousButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) 
+            {
+                loadPrevious();
+            }
+        });
+        
+        Button todayButton = (Button)this.findViewById(R.id.button_today);
+        todayButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) 
+            {
+                loadToday();
+            }
+        });
+        
+        Button nextButton = (Button)this.findViewById(R.id.button_next);
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) 
+            {
+                loadNext();
+            }
+        });
 
         // Find the image view on the activity layout
     	ImageView imgView = (ImageView)findViewById(R.id.imageViewAPOD);
@@ -153,47 +178,14 @@ public class APODActivity extends Activity //implements OnClickListener
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.apod_menu, menu);
         return true;
-    }
-
+    } 
+   
     @Override
     public boolean onOptionsItemSelected(MenuItem item) 
     {
-    	Calendar date;
     	TextView aboutMsg;
         switch (item.getItemId()) 
         {
-        	// Load the APOD for the day before the current APOD
-    	    case R.id.menu_previous:
-	        	// Start the spinner
-	        	progressDialog = ProgressDialog.show(APODActivity.this, APODActivity.this.getResources().getString(R.string.loading), APODActivity.this.getResources().getString(R.string.loading_your));
-
-	        	// Load the APOD
-	        	date = (Calendar)apodData.getDate().clone();
-                date.add(Calendar.DATE, -1);
-                new APODAsyncLoader(this, progressDialog, 0).execute(date);
-	            return true;
-
-	        // Load today's APOD
-	        case R.id.menu_today:
-	        	// Start the spinner
-	        	progressDialog = ProgressDialog.show(APODActivity.this, APODActivity.this.getResources().getString(R.string.loading), APODActivity.this.getResources().getString(R.string.loading_your));
-
-	        	// Load the APOD
-	        	date = GregorianCalendar.getInstance();
-	        	new APODAsyncLoader(this, progressDialog, 0).execute(date);
-	            return true;
-
-	        // Load the APOD for the day after the current APOD
-	        case R.id.menu_next:
-	        	// Start the spinner
-	        	progressDialog = ProgressDialog.show(APODActivity.this, APODActivity.this.getResources().getString(R.string.loading), APODActivity.this.getResources().getString(R.string.loading_your));
-
-	        	// Load the APOD
-	        	date = (Calendar)apodData.getDate().clone();
-                date.add(Calendar.DATE, 1);
-                new APODAsyncLoader(this, progressDialog, 0).execute(date);
-	            return true;
-
 	        // Load the APOD for a specific date
         	case R.id.menu_set_date:
         		// Load the date picker. The new date will be set in the callback function
@@ -232,6 +224,35 @@ public class APODActivity extends Activity //implements OnClickListener
                 return super.onOptionsItemSelected(item);
         }
     }
+
+	private void loadNext() {
+		Calendar date;
+		progressDialog = ProgressDialog.show(APODActivity.this, APODActivity.this.getResources().getString(R.string.loading), APODActivity.this.getResources().getString(R.string.loading_your));
+
+		// Load the APOD
+		date = (Calendar)apodData.getDate().clone();
+		date.add(Calendar.DATE, 1);
+		new APODAsyncLoader(this, progressDialog, 0).execute(date);
+	}
+
+	private void loadToday() {
+		Calendar date;
+		progressDialog = ProgressDialog.show(APODActivity.this, APODActivity.this.getResources().getString(R.string.loading), APODActivity.this.getResources().getString(R.string.loading_your));
+
+		// Load the APOD
+		date = GregorianCalendar.getInstance();
+		new APODAsyncLoader(this, progressDialog, 0).execute(date);
+	}
+
+	private void loadPrevious() {
+		Calendar date;
+		progressDialog = ProgressDialog.show(APODActivity.this, APODActivity.this.getResources().getString(R.string.loading), APODActivity.this.getResources().getString(R.string.loading_your));
+
+		// Load the APOD
+		date = (Calendar)apodData.getDate().clone();
+		date.add(Calendar.DATE, -1);
+		new APODAsyncLoader(this, progressDialog, 0).execute(date);
+	}
 
     // Listener for the DatePickerDialog. This date picker is called when selecting @Set Date@ from the
     // menu. If the Set button is clicked, the date from the date picker is used to load a precise APOD.

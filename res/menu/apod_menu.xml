@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/menu_previous" android:title="@string/menu_previous"></item><item android:id="@+id/menu_today" android:title="@string/menu_today"></item><item android:id="@+id/menu_next" android:title="@string/menu_next"></item><item android:id="@+id/menu_set_date" android:title="@string/menu_set_date"></item>
-    <item android:id="@+id/menu_settings" android:title="@string/menu_settings"></item><item android:id="@+id/menu_about" android:title="@string/menu_about"></item>
-    
-    
-    
-    
-    
-
+    <item android:id="@+id/menu_set_date" android:title="@string/menu_set_date"></item>
+    <item android:id="@+id/menu_settings" android:title="@string/menu_settings"></item>
+    <item android:id="@+id/menu_about" android:title="@string/menu_about"></item>
 </menu>
