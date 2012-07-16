@@ -30,6 +30,7 @@ package com.basbrun;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 
 // The APODDataProvider is the link between the application and the APOD website 
@@ -38,6 +39,12 @@ import android.graphics.Bitmap;
 public class APODDataProvider
 {
 	private APODData apodData = null;
+	private SharedPreferences preferences = null;
+	
+	public APODDataProvider(SharedPreferences preferences)
+	{
+		this.preferences = preferences;
+	}
 	
 	public String getAPODRoot()
 	{
@@ -68,7 +75,7 @@ public class APODDataProvider
 		APODData.ApodContentType apodContentType = APODData.ApodContentType.NONE;
 
 		// Get the APOD web page HTML content 
-		String page = APODDataConnector.GetHtml(date);
+		String page = APODDataConnector.GetHtml(date, preferences.getBoolean("caching", true));
 		if(page != null)
 		{
 			// Parse the page to find an <IMG/> element
@@ -103,7 +110,7 @@ public class APODDataProvider
 		switch(apodContentType)
 		{
 		case IMG:
-			Bitmap bmp = APODDataConnector.getBitmap(date, src);				
+			Bitmap bmp = APODDataConnector.getBitmap(date, src, preferences.getBoolean("caching", true));				
 			apodData = new APODData(
 					apodContentType,
 					date,

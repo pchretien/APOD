@@ -1,3 +1,7 @@
+v0.3
+- Bug Fix: Text View still apparent on top of APODActivity
+- Added a startup slpash screen with a minimum delay of 4 seconds. 
+
 v0.2 (2012-07-13)
 - Removed the full path from the top of the main Activity
 - Picture and HTML caching on the /sdcard

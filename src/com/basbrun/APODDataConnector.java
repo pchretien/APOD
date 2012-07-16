@@ -52,13 +52,19 @@ public class APODDataConnector
 	}
 	
 	// Get an HTML page content ...
-	public static String GetHtml(Calendar date)
+	public static String GetHtml(Calendar date, boolean caching)
 	{
 		String filename = APODDataConnector.formatFileName(date, "html", "ap");
 		
-		String pageSource = getHtmlFromCache(filename);
-		if(pageSource != null)
-			return pageSource;
+		String pageSource;
+		
+		if(caching)
+		{
+			pageSource = getHtmlFromCache(filename);
+			
+			if(pageSource != null)
+				return pageSource;
+		}
 
 		try
         {
@@ -81,7 +87,9 @@ public class APODDataConnector
         	return null;
         }
 
-		saveHtmlToCache(filename, pageSource);
+		if(caching)
+			saveHtmlToCache(filename, pageSource);
+		
 		return pageSource;
 	}
 	
@@ -129,11 +137,16 @@ public class APODDataConnector
 	}
 
 	// Download a bitmap ...
-	public static Bitmap getBitmap(Calendar date, String src)
+	public static Bitmap getBitmap(Calendar date, String src, boolean caching)
 	{
-		Bitmap bmp = getBitmapFromCache(date);
-		if(bmp != null)
-			return bmp;
+		Bitmap bmp = null;
+		
+		if(caching)
+		{
+			bmp = getBitmapFromCache(date);
+			if(bmp != null)
+				return bmp;
+		}
 		
 		try
 		{
@@ -141,7 +154,8 @@ public class APODDataConnector
 			InputStream is = url.openStream();
 			bmp = BitmapFactory.decodeStream(is);
 			
-			saveBitmapToCache(bmp, date);
+			if(caching)
+				saveBitmapToCache(bmp, date);
 			
 			return bmp;
 		}
@@ -214,5 +228,19 @@ public class APODDataConnector
 		date.get(Calendar.DATE));
 		
 		return filename;
+	}
+	
+	public static void clearCache()
+	{
+		File directory = new File(checkApodDirectory());
+		File[] files = directory.listFiles();	
+		
+		if(files == null)
+			return;
+		
+		for(File file : files)
+		{
+			file.delete();
+		}
 	}
 }

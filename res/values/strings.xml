@@ -10,6 +10,6 @@
     <string name="loading_your">Loading your APOD </string>
     <string name="menu_previous">Previous</string>
     <string name="menu_next">Next</string>
-    <string name="menu_settings">Settings</string>
+    <string name="menu_settings">Preferences</string>
 
 </resources>

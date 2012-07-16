@@ -94,10 +94,7 @@ public class APODActivity extends Activity //implements OnClickListener
         		apodData.getDate().get(Calendar.DATE));
         setTitle(title);
 
-        // Find the text view on the activity layout
-    	TextView textView = (TextView)findViewById(R.id.textViewPath);
-    	
-    	// Find the image view on the activity layout
+        // Find the image view on the activity layout
     	ImageView imgView = (ImageView)findViewById(R.id.imageViewAPOD);
     	
     	// Find the web view on the activity layout
@@ -127,7 +124,6 @@ public class APODActivity extends Activity //implements OnClickListener
     	{
     		// Standard image
 	    	case IMG:
-	    		textView.setText(apodData.getPagePath());
 	    		imgView.setImageBitmap(apodData.getBitmap());
 	    		imgView.setOnClickListener(onPictureClick);
 	            imgView.setOnTouchListener(gestureListener);
@@ -135,7 +131,6 @@ public class APODActivity extends Activity //implements OnClickListener
 	
 	    	// Most of the <iframe/> elements contains YouTube videos
 	    	case IFRAME:
-	    		textView.setText(apodData.getPagePath());
 	    		imgView.setImageResource(R.drawable.play);
 	    		imgView.setOnClickListener(onVideoClick);
 	    		imgView.setOnTouchListener(gestureListener);
@@ -143,16 +138,12 @@ public class APODActivity extends Activity //implements OnClickListener
 	
 	    	// Undefined contend ...
 	    	case NONE:
-	    		textView.setText(apodData.getPagePath());
 	    		break;
 	
 	    	// Reporting errors to the user ...
 	    	case ERROR:
-	    		textView.setText(apodData.getError());
 	    		break;
-    	}    	
-    	
-    	textView.setVisibility(TextView.INVISIBLE);
+    	} 
     }
 
     @Override
@@ -220,11 +211,7 @@ public class APODActivity extends Activity //implements OnClickListener
 
             // Not yet implemented
         	case R.id.menu_settings:
-        		new AlertDialog.Builder(this)
-        		.setMessage("Settings")
-        		.setPositiveButton("Ok", null)
-        		.show();
-
+        		startActivity(new Intent(APODActivity.this, APODPreferences.class));
                 return true;
             
             // Credits ...

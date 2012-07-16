@@ -28,6 +28,8 @@
 package com.basbrun;
 
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 // The APODApplication class contains a reference to a unique data provider 
 // All the communications to the web server are made trough this data provider
@@ -37,12 +39,15 @@ import android.app.Application;
 // application file. android:name="com.basbrun.APODApplication"
 public class APODApplication extends Application
 {
-	private static APODDataProvider dataProvider= new APODDataProvider();
+	private static APODDataProvider dataProvider = null;
 
 	@Override
 	public void onCreate()
 	{
 		super.onCreate();
+		
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		dataProvider = new APODDataProvider(preferences);
 	}
 
 	public APODDataProvider getDataProvider() {
