@@ -35,6 +35,7 @@ import com.basbrun.APODData.ApodContentType;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -304,7 +305,6 @@ public class APODActivity extends Activity //implements OnClickListener
     {
     	public void onDismiss(DialogInterface dialog)
 		{
-    		Toast.makeText(APODActivity.this, "Set date canceled ...", Toast.LENGTH_SHORT).show();
 		}
     };
 
