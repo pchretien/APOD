@@ -67,15 +67,52 @@ public class APODDataProvider
 		// If the data currently loaded is the same as the one requested nothing is done
 		if(apodData != null && apodData.getDate().equals(date))
 			return apodData;
-		
+	
 		// Initialization
 		String src = null;
 		String error = "";
 		String description = "";
+		String page = "";
 		APODData.ApodContentType apodContentType = APODData.ApodContentType.NONE;
+		
+			
+		if(	date.get(Calendar.YEAR)<1995 || 
+			(date.get(Calendar.YEAR) == 1995 && date.get(Calendar.MONTH) < 5) || 
+			(date.get(Calendar.YEAR) == 1995 && date.get(Calendar.MONTH) == 5 && date.get(Calendar.DATE) < 20 && date.get(Calendar.DATE) != 16))
+		{
+			apodData = new APODData(
+				APODData.ApodContentType.ERROR,
+				date,
+				null,
+				src,
+				page,
+				APODDataConnector.getDomainRoot() + APODDataConnector.formatFileName(date, "html", "ap"),
+				description,
+				"There are not APOD before June 16th 1995 and for June 17th, 18th and 19th 1995");	
+			
+			return null;
+		}
+		
+		Calendar today = Calendar.getInstance();		
+		if(	date.get(Calendar.YEAR) > today.get(Calendar.YEAR) ||
+			(date.get(Calendar.YEAR) == today.get(Calendar.YEAR) && date.get(Calendar.MONTH) > today.get(Calendar.MONTH)) ||
+			(date.get(Calendar.YEAR) == today.get(Calendar.YEAR) && date.get(Calendar.MONTH) == today.get(Calendar.MONTH) && date.get(Calendar.DATE) > today.get(Calendar.DATE)) )
+		{
+			apodData = new APODData(
+				APODData.ApodContentType.ERROR,
+				date,
+				null,
+				src,
+				page,
+				APODDataConnector.getDomainRoot() + APODDataConnector.formatFileName(date, "html", "ap"),
+				description,
+				"There are not APOD for dates after today");	
+			
+			return null;
+		}
 
 		// Get the APOD web page HTML content 
-		String page = APODDataConnector.GetHtml(date, preferences.getBoolean("caching", true));
+		page = APODDataConnector.GetHtml(date, preferences.getBoolean("caching", true));
 		if(page != null)
 		{
 			// Parse the page to find an <IMG/> element

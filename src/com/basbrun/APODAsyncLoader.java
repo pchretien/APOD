@@ -41,20 +41,7 @@ class APODAsyncLoader extends AsyncTask<Calendar, Void, Void>
 		Calendar timer = Calendar.getInstance();
 		
 		// Never load an APOD for a date after today ...
-		Calendar newDate = params[0];
-		int y = newDate.get(Calendar.YEAR);
-		int m = newDate.get(Calendar.MONTH);
-		int d = newDate.get(Calendar.DATE);
-			
-		if(y<1995)
-			return null;
-		
-		if(y == 1995 && m < 5)
-			return null;
-		
-		if(y == 1995 && m == 5 && d < 20 && d != 16)
-			return null;
-		
+		Calendar newDate = params[0];		
 		app.getDataProvider().getAPODByDate(newDate);
 		
 		try
