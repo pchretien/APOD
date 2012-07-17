@@ -150,7 +150,15 @@ public class APODDataProvider
 			break;
 
 		case NONE:
-			apodData = null;
+			apodData = new APODData(
+					apodContentType,
+					date,
+					null,
+					src,
+					page,
+					APODDataConnector.getDomainRoot() + APODDataConnector.formatFileName(date, "html", "ap"),
+					description,
+					error);		
 			break;
 		}		
 

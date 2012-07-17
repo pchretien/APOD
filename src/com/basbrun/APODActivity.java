@@ -30,6 +30,8 @@ package com.basbrun;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import com.basbrun.APODData.ApodContentType;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -50,6 +52,7 @@ import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -80,22 +83,8 @@ public class APODActivity extends Activity //implements OnClickListener
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.apod_main);
-
-        // Get a reference to the Application main class
-        app = (APODApplication)getApplication();
-
-        // Get a reference to the currently loaded APOD
-        apodData = app.getDataProvider().getAPOD();
         
-        // Change the Activity title ...
-        String title = String.format(
-        		"APOD (%d/%02d/%02d)", 
-        		apodData.getDate().get(Calendar.YEAR), 
-        		apodData.getDate().get(Calendar.MONTH)+1, 
-        		apodData.getDate().get(Calendar.DATE));
-        setTitle(title);
-        
-        Button previousButton = (Button)this.findViewById(R.id.button_prev);
+        ImageButton previousButton = (ImageButton)this.findViewById(R.id.button_prev);
         previousButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) 
             {
@@ -111,7 +100,7 @@ public class APODActivity extends Activity //implements OnClickListener
             }
         });
         
-        Button nextButton = (Button)this.findViewById(R.id.button_next);
+        ImageButton nextButton = (ImageButton)this.findViewById(R.id.button_next);
         nextButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) 
             {
@@ -134,6 +123,44 @@ public class APODActivity extends Activity //implements OnClickListener
                 return gestureDetector.onTouchEvent(event);
             }
         };
+        
+        // Get a reference to the Application main class
+        app = (APODApplication)getApplication();
+        
+        // Get a reference to the currently loaded APOD
+        apodData = app.getDataProvider().getAPOD();
+        
+        if(apodData.getApodDataType() == ApodContentType.NONE ||
+           apodData.getApodDataType() == ApodContentType.ERROR)
+        {
+        	TextView aboutMsg = new TextView(this);
+        	if(apodData.getApodDataType() == ApodContentType.ERROR)
+        		aboutMsg.setText(apodData.getError());
+        	else
+        		aboutMsg.setText(" Connection error! Make sure you are connected to the internet. ");
+    		aboutMsg.setGravity(Gravity.CENTER_HORIZONTAL);
+    		
+        	new AlertDialog.Builder(this)
+    		.setView(aboutMsg)
+    		.setPositiveButton("OK", null)
+    		.show();
+        	
+        	imgView.setVisibility(View.INVISIBLE);
+        	webView.setVisibility(View.INVISIBLE);
+        }
+        else
+        {
+        	imgView.setVisibility(View.VISIBLE);
+        	webView.setVisibility(View.VISIBLE);
+        }
+        
+        // Change the Activity title ...
+        String title = String.format(
+        		"APOD (%d/%02d/%02d)", 
+        		apodData.getDate().get(Calendar.YEAR), 
+        		apodData.getDate().get(Calendar.MONTH)+1, 
+        		apodData.getDate().get(Calendar.DATE));
+        setTitle(title);
         
         // Load the APOD description into the Activity webview
         webView.loadDataWithBaseURL(app.getDataProvider().getAPODRoot(),
@@ -189,7 +216,10 @@ public class APODActivity extends Activity //implements OnClickListener
 	        // Load the APOD for a specific date
         	case R.id.menu_set_date:
         		// Load the date picker. The new date will be set in the callback function
-        		Calendar calendar = apodData.getDate();
+        		Calendar calendar = Calendar.getInstance();
+        		if(apodData != null)
+        			calendar = apodData.getDate();
+        		
         		DatePickerDialog datePicker = new DatePickerDialog(
         				this,
         				mDateSetListener,
@@ -215,7 +245,7 @@ public class APODActivity extends Activity //implements OnClickListener
 
         		new AlertDialog.Builder(this)
         		.setView(aboutMsg)
-        		.setPositiveButton("Ok", null)
+        		.setPositiveButton("OK", null)
         		.show();
 
                 return true;

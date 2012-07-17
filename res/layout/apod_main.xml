@@ -5,31 +5,34 @@
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:orientation="vertical" >	
+	    android:orientation="vertical" >
 	    
 	    <LinearLayout 
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_marginLeft="0dp"
 	        android:layout_marginRight="0dp">
-	        <Button
-	            android:id="@+id/button_prev"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_weight="1"
-		        android:text="@string/menu_previous" />
-	        <Button
+	        
+	        <ImageButton
+				android:id="@+id/button_prev"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:src="@drawable/prev_selector"
+				android:layout_weight="1"/>	
+
+			<Button
 	            android:id="@+id/button_today"
 		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_weight="1"
-		        android:text="@string/menu_today" />
-	        <Button
-	            android:id="@+id/button_next"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_weight="1"
-		        android:text="@string/menu_next" />
+		        android:layout_height="fill_parent"
+		        android:text="@string/menu_today"
+		        android:layout_weight="1"/>
+				
+		    <ImageButton
+				android:id="@+id/button_next"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:src="@drawable/next_selector"
+				android:layout_weight="1"/>	        
 	    </LinearLayout>	
 	    <ImageView
 	        android:id="@+id/imageViewAPOD"
