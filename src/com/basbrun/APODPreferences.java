@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 
+// This class is the application Preferences page activity
 public class APODPreferences extends PreferenceActivity 
 {
 	/** Called when the activity is first created. */
@@ -19,6 +20,9 @@ public class APODPreferences extends PreferenceActivity
 	    super.onCreate(savedInstanceState);
 	    this.addPreferencesFromResource(R.xml.preferences);
 	    
+	    // The Clear Cache button is not realy a button ... We bind to the
+	    // Preference element and add an onClick callback to display a confirmation
+	    // message to the user
 	    Preference button = (Preference)findPreference("clear_cache");
 	    button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() 
 	    {
@@ -30,9 +34,11 @@ public class APODPreferences extends PreferenceActivity
         });
 	}
 	
+	// Creat the dialog boxes
 	@Override
 	protected Dialog onCreateDialog(int id) 
 	{
+		// Create the confirmation dialog
         if (id == CLEAR_CACHE_ALERT) 
         {
         	AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -42,6 +48,7 @@ public class APODPreferences extends PreferenceActivity
             return builder.create();
         }
             
+        // Create the Done dialog
         if (id == CLEAR_CACHE_ALERT_DONE) 
         {
         	AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -60,10 +67,13 @@ public class APODPreferences extends PreferenceActivity
     	
     }
 	
+	// Dialog callback methods
 	private DialogInterface.OnClickListener clearCacheDialogClickListener = new DialogInterface.OnClickListener() {
         public void onClick(DialogInterface dialog, int which) {
             switch (which){
             case DialogInterface.BUTTON_POSITIVE:
+            	// If the user click Yes in the confirmation dialog,
+            	// all files in the cache are deleted
             	APODDataConnector.clearCache();
             	showDialog(CLEAR_CACHE_ALERT_DONE);            	
                 break;

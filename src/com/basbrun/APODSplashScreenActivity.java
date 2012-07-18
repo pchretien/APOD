@@ -5,6 +5,7 @@ import java.util.Calendar;
 import android.app.Activity;
 import android.os.Bundle;
 
+// Splash screen ...
 public class APODSplashScreenActivity extends Activity {
 
 	@Override
@@ -13,7 +14,7 @@ public class APODSplashScreenActivity extends Activity {
 		setContentView(R.layout.apod_splash_screen);
 		
 		Calendar calendar = Calendar.getInstance();
-		new APODAsyncLoader(this, null, 4000).execute(calendar);
+		new APODAsyncLoader(this, null, 3000).execute(calendar);
 	}
 
 }

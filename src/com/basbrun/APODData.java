@@ -66,7 +66,7 @@ public class APODData
 	// Error message if any
 	private String error;
 
-	// ctr
+	// Ctor
 	public APODData(
 			ApodContentType apodDataType,
 			Calendar date,
@@ -92,6 +92,9 @@ public class APODData
 	}
 	public Bitmap getBitmap() {
 		return bitmap;
+	}
+	public void setBitmap(Bitmap bitmap) {
+		this.bitmap = bitmap;
 	}
 	public String getPage() {
 		return page;

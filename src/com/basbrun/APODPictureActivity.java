@@ -45,21 +45,31 @@ public class APODPictureActivity extends Activity
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.apod_picture);
 
-	    app = (APODApplication)getApplication();	    
-        apodData = app.getDataProvider().getAPOD();
+	    // Get the current APOD
+	    getData();
 
+	    // Build the full path of the image to display
         String src = app.getDataProvider().getBitmapPathFromCache(apodData.getDate());
         if(src != null)
         	src = "file:/" + src;
         else
         	src = apodData.getSrc();
         
+        // Build the content of the HTML page
         String htmlPage = String.format("<html><body><a href=\"%s\"><img src=\"%s\"/></a></body></html>", apodData.getPagePath(), src);
         
+        // Create the WebView
         WebView webView = (WebView) findViewById(R.id.webViewPicture);
         webView.getSettings().setAllowFileAccess(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.loadDataWithBaseURL("", htmlPage, "text/html", "utf-8", "");
+	}
+
+	// Get the current APOD
+	private void getData() 
+	{
+		app = (APODApplication)getApplication();	    
+        apodData = app.getDataProvider().getAPOD();
 	}
 }

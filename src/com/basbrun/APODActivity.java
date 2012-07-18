@@ -30,12 +30,9 @@ package com.basbrun;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import com.basbrun.APODData.ApodContentType;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -56,7 +53,8 @@ import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.basbrun.APODData.ApodContentType;
 
 // APODActivity is the main application activity. The APOD are displayed trough
 // this activity. The menu and all gestures are bound to this activity.
@@ -72,50 +70,60 @@ public class APODActivity extends Activity //implements OnClickListener
 
 	// Constants and listeners for gesture detection
 	private static final int SWIPE_MIN_DISTANCE = 60;
-    private static final int SWIPE_MAX_OFF_PATH = 250;
+    private static final int SWIPE_MAX_OFF_PATH = 350;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
     private GestureDetector gestureDetector;
     private View.OnTouchListener gestureListener;
 
     // The wait spinner dialog
     private ProgressDialog progressDialog;
+    
+    // The image view holds the picture of the day in the main page
+    private ImageView imgView;
+    
+    // The web view holds the description of the APOD
+    WebView webView;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.apod_main);
         
-        ImageButton previousButton = (ImageButton)this.findViewById(R.id.button_prev);
-        previousButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) 
-            {
-                loadPrevious();
-            }
-        });
-        
-        Button todayButton = (Button)this.findViewById(R.id.button_today);
-        todayButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) 
-            {
-                loadToday();
-            }
-        });
-        
-        ImageButton nextButton = (ImageButton)this.findViewById(R.id.button_next);
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) 
-            {
-                loadNext();
-            }
-        });
+        // Bind the XML layout definition to the code
+        bindings();
 
-        // Find the image view on the activity layout
-    	ImageView imgView = (ImageView)findViewById(R.id.imageViewAPOD);
-    	
-    	// Find the web view on the activity layout
-    	WebView webView = (WebView) findViewById(R.id.webViewDescription);
+        // Create gesture detector listeners
+    	createGestureDetector();
+        
+    	// Connect to the APODDataProvider singleton and get the current APOD
+        getData();
+        
+        // Check for errors in the returned apodData object
+        checkForErrors();
+        
+        // Set the title of the application for the date of the current APOD
+        changeTitle();
 
-    	// Gesture detection callback methods
+        // Initialize the Activity fields 
+    	fillWithApodData(); 
+    }
+
+    // Gt the APODDataProvider singleton stores in the APODApplication 
+    // Get the APODData of the current day.
+	private void getData() {
+		// Get a reference to the Application main class
+        // We derived the main application class to store the 
+        // APODDataProvider singleton
+        app = (APODApplication)getApplication();
+        
+        // Get a reference to the currently loaded APOD
+        apodData = app.getDataProvider().getAPOD();
+	}
+
+    // Create the appropriate gesture detector to detect left and right Fling
+    // This gesture is applied to the ImageView and the WebView of the APODActivity
+	private void createGestureDetector() {
+		// Gesture detection callback methods
         gestureDetector = new GestureDetector(new APODGestureDetector());
         gestureListener = new View.OnTouchListener()
         {
@@ -124,56 +132,21 @@ public class APODActivity extends Activity //implements OnClickListener
                 return gestureDetector.onTouchEvent(event);
             }
         };
-        
-        // Get a reference to the Application main class
-        app = (APODApplication)getApplication();
-        
-        // Get a reference to the currently loaded APOD
-        apodData = app.getDataProvider().getAPOD();
-        
-        if(apodData.getApodDataType() == ApodContentType.NONE ||
-           apodData.getApodDataType() == ApodContentType.ERROR)
-        {
-        	TextView aboutMsg = new TextView(this);
-        	if(apodData.getApodDataType() == ApodContentType.ERROR)
-        		aboutMsg.setText(apodData.getError());
-        	else
-        		aboutMsg.setText(" Connection error! Make sure you are connected to the internet. ");
-    		aboutMsg.setGravity(Gravity.CENTER_HORIZONTAL);
-    		
-        	new AlertDialog.Builder(this)
-    		.setView(aboutMsg)
-    		.setPositiveButton("OK", null)
-    		.show();
-        	
-        	imgView.setVisibility(View.INVISIBLE);
-        	webView.setVisibility(View.INVISIBLE);
-        }
-        else
-        {
-        	imgView.setVisibility(View.VISIBLE);
-        	webView.setVisibility(View.VISIBLE);
-        }
-        
-        // Change the Activity title ...
-        String title = String.format(
-        		"APOD (%d/%02d/%02d)", 
-        		apodData.getDate().get(Calendar.YEAR), 
-        		apodData.getDate().get(Calendar.MONTH)+1, 
-        		apodData.getDate().get(Calendar.DATE));
-        setTitle(title);
-        
-        // Load the APOD description into the Activity webview
+	}
+
+    // Initialize the Activity fields depending on the type of data loaded
+    // from the APOD website
+	private void fillWithApodData() 
+	{
+		// Load the APOD description into the Activity webview
         webView.loadDataWithBaseURL(app.getDataProvider().getAPODRoot(),
 				apodData.getDescription(),
 				"text/html",
 				null,
 				null);
         webView.setOnTouchListener(gestureListener);
-
-        // Initialize the Activity fields depending on the type of data loaded
-        // from the APOD website
-    	switch(apodData.getApodDataType())
+        
+		switch(apodData.getApodDataType())
     	{
     		// Standard image
 	    	case IMG:
@@ -196,9 +169,83 @@ public class APODActivity extends Activity //implements OnClickListener
 	    	// Reporting errors to the user ...
 	    	case ERROR:
 	    		break;
-    	} 
-    }
+    	}
+	}
 
+    // Change the Activity title to the date of the current APOD ...
+	private void changeTitle() 
+	{		
+        String title = String.format(
+        		"APOD (%d/%02d/%02d)", 
+        		apodData.getDate().get(Calendar.YEAR), 
+        		apodData.getDate().get(Calendar.MONTH)+1, 
+        		apodData.getDate().get(Calendar.DATE));
+        setTitle(title);
+	}
+
+	// Validate the content of the apodData object and display error messages 
+	// if required.
+	private void checkForErrors() {
+		// If there is a connection error or an out of date error, the
+        // APODDataProvider returns an APODData object of type NONE or ERROR.
+        if(apodData.getApodDataType() == ApodContentType.NONE ||
+           apodData.getApodDataType() == ApodContentType.ERROR)
+        {
+        	TextView aboutMsg = new TextView(this);
+        	if(apodData.getApodDataType() == ApodContentType.ERROR)
+        		aboutMsg.setText(apodData.getError());
+        	else
+        		aboutMsg.setText(" Connection error! Make sure you are connected to the internet. ");
+    		aboutMsg.setGravity(Gravity.CENTER_HORIZONTAL);
+    		
+        	new AlertDialog.Builder(this)
+    		.setView(aboutMsg)
+    		.setPositiveButton("OK", null)
+    		.show();
+        	
+        	imgView.setVisibility(View.INVISIBLE);
+        	webView.setVisibility(View.INVISIBLE);
+        }
+	}
+
+	// Bind XML layout elements to the code.
+	private void bindings() {
+		// Bind to the Previous on screen button
+        ImageButton previousButton = (ImageButton)this.findViewById(R.id.button_prev);
+        previousButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) 
+            {
+                loadPrevious();
+            }
+        });
+        
+        // Bind to the Today on screen button
+        Button todayButton = (Button)this.findViewById(R.id.button_today);
+        todayButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) 
+            {
+                loadToday();
+            }
+        });
+        
+     	// Bind to the Next on screen button
+        ImageButton nextButton = (ImageButton)this.findViewById(R.id.button_next);
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) 
+            {
+                loadNext();
+            }
+        });
+
+        // Bind the image view on the activity layout
+    	imgView = (ImageView)findViewById(R.id.imageViewAPOD);
+    	
+    	// Bind the web view on the activity layout
+    	webView = (WebView) findViewById(R.id.webViewDescription);
+	}
+
+	// This method is called when the Activity is ready to create the menu.
+	// We use the inflater to load an XML menu definition 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) 
     {
@@ -208,18 +255,17 @@ public class APODActivity extends Activity //implements OnClickListener
         return true;
     } 
    
+    // Main menu selection callbacks. When a menu item is clicked, 
+    // this function is called with the id of the menu item selected.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) 
     {
     	TextView aboutMsg;
         switch (item.getItemId()) 
         {
-	        // Load the APOD for a specific date
+	        // Load the APOD for a specific date using the DatePickerDialog
         	case R.id.menu_set_date:
-        		// Load the date picker. The new date will be set in the callback function
-        		Calendar calendar = Calendar.getInstance();
-        		if(apodData != null)
-        			calendar = apodData.getDate();
+        		Calendar calendar = apodData.getDate();
         		
         		DatePickerDialog datePicker = new DatePickerDialog(
         				this,
@@ -229,15 +275,15 @@ public class APODActivity extends Activity //implements OnClickListener
         				calendar.get(Calendar.DAY_OF_MONTH));
         		datePicker.setOnDismissListener(mDismissListener);
         		datePicker.show();
-
                 return true;
 
-            // Not yet implemented
+            // Start the APODPreferencesActivity
         	case R.id.menu_settings:
         		startActivity(new Intent(APODActivity.this, APODPreferences.class));
                 return true;
             
-            // Credits ...
+            // Display credits ... If you are reading this, your name could appear here
+            // if you get involved in the project ;)
         	case R.id.menu_about:
         		
         		aboutMsg = new TextView(this);
@@ -256,6 +302,7 @@ public class APODActivity extends Activity //implements OnClickListener
         }
     }
 
+    // Load the APOD of the date after the current date
 	private void loadNext() {
 		Calendar date;
 		progressDialog = ProgressDialog.show(APODActivity.this, APODActivity.this.getResources().getString(R.string.loading), APODActivity.this.getResources().getString(R.string.loading_your));
@@ -266,6 +313,7 @@ public class APODActivity extends Activity //implements OnClickListener
 		new APODAsyncLoader(this, progressDialog, 0).execute(date);
 	}
 
+	// Load today's APOD
 	private void loadToday() {
 		Calendar date;
 		progressDialog = ProgressDialog.show(APODActivity.this, APODActivity.this.getResources().getString(R.string.loading), APODActivity.this.getResources().getString(R.string.loading_your));
@@ -275,6 +323,7 @@ public class APODActivity extends Activity //implements OnClickListener
 		new APODAsyncLoader(this, progressDialog, 0).execute(date);
 	}
 
+	// Load the APOD of the date before the current date
 	private void loadPrevious() {
 		Calendar date;
 		progressDialog = ProgressDialog.show(APODActivity.this, APODActivity.this.getResources().getString(R.string.loading), APODActivity.this.getResources().getString(R.string.loading_your));

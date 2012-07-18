@@ -43,6 +43,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 
+// Connect to the internet to download web pages and pictures. 
+// The data connector also provide simple caching to save on bandwidth
 public class APODDataConnector
 {
 	private static String domainRoot = "http://apod.nasa.gov/apod/";
@@ -51,13 +53,15 @@ public class APODDataConnector
 		return domainRoot;
 	}
 	
-	// Get an HTML page content ...
+	// Get the HTML page content for the date received in parameter...
 	public static String GetHtml(Calendar date, boolean caching)
 	{
+		String pageSource;	
+		
+		// Build the filename from the date
 		String filename = APODDataConnector.formatFileName(date, "html", "ap");
-		
-		String pageSource;
-		
+			
+		// Check if the object is in the cache
 		if(caching)
 		{
 			pageSource = getHtmlFromCache(filename);
@@ -66,6 +70,7 @@ public class APODDataConnector
 				return pageSource;
 		}
 
+		// If not in cache, download the page
 		try
         {
         	URL url = new URL(domainRoot + filename);
@@ -87,12 +92,14 @@ public class APODDataConnector
         	return null;
         }
 
+		// If caching is activated, save the downloaded page to the cache
 		if(caching)
 			saveHtmlToCache(filename, pageSource);
 		
 		return pageSource;
 	}
 	
+	// Retreive an html file from the cache
 	private static String getHtmlFromCache(String filename)
 	{	
 		try
@@ -120,6 +127,7 @@ public class APODDataConnector
 		return null;
 	}
 	
+	// Save an html file to the cache
 	private static void saveHtmlToCache(String filename, String html)
 	{
 		try 
@@ -136,11 +144,12 @@ public class APODDataConnector
 		}
 	}
 
-	// Download a bitmap ...
+	// Download a bitmap from the web
 	public static Bitmap getBitmap(Calendar date, String src, boolean caching)
 	{
 		Bitmap bmp = null;
 		
+		// Check for the bitmap in the cache
 		if(caching)
 		{
 			bmp = getBitmapFromCache(date);
@@ -148,12 +157,14 @@ public class APODDataConnector
 				return bmp;
 		}
 		
+		// If not in the cache, download form the web
 		try
 		{
 			URL url = new URL(src);
 			InputStream is = url.openStream();
 			bmp = BitmapFactory.decodeStream(is);
 			
+			// If caching is activated, save the bitmap to the cache
 			if(caching)
 				saveBitmapToCache(bmp, date);
 			
@@ -165,6 +176,7 @@ public class APODDataConnector
 		}
 	}
 	
+	// Read a bitmap from the cache
 	private static Bitmap getBitmapFromCache(Calendar date)
 	{
 		String dir = checkApodDirectory();  
@@ -173,6 +185,7 @@ public class APODDataConnector
 		return BitmapFactory.decodeFile(dir + File.separator + filename);
 	}
 	
+	// Check if a bitmap is in the cache
 	private static boolean isBitmapCached(Calendar date)
 	{
 		String dir = checkApodDirectory();  
@@ -181,6 +194,7 @@ public class APODDataConnector
 		return file.exists();
 	}
 	
+	// Get the full path of the image in the cache to load the WebView
 	public static String getBitmapPathFromCache(Calendar date)
 	{
 		if(!isBitmapCached(date))
@@ -189,6 +203,7 @@ public class APODDataConnector
 		return checkApodDirectory() + File.separator + formatFileName(date, "jpg", "");
 	}
 
+	// Add a bitmap to the cache
 	private static void saveBitmapToCache(Bitmap bmp, Calendar date)
 	{
 		if(bmp == null)
@@ -208,6 +223,8 @@ public class APODDataConnector
 		}
 	}
 	
+	// Validate tht the APOD cache directory exist. If it does not exist, it
+	// is created and the path returned to the caller
 	private static String checkApodDirectory() 
 	{
 		String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "APOD";
@@ -218,6 +235,7 @@ public class APODDataConnector
 		return dir;
 	}
 	
+	// Build the filename of the html page to download using the date of the requested APOD
 	public static String formatFileName(Calendar date, String extension, String prefix)
 	{
 		// Check if the picture exist on disk ...
@@ -230,6 +248,7 @@ public class APODDataConnector
 		return filename;
 	}
 	
+	// Erase all files in the cache
 	public static void clearCache()
 	{
 		File directory = new File(checkApodDirectory());

@@ -27,9 +27,11 @@
 
 package com.basbrun;
 
+// Custom very very basic HTML parser
+// Any suggestion for a nice html parser on Android?
 public class APODHtmlParser
 {
-	// Find the first occurence of a specific element and return it's SRC attribute value
+	// Find the first occurrence of a specific element and return it's SRC attribute value
 	public static String FindFirstElementSrc(String html, String elementType)
 	{
 		int elementStart = html.toUpperCase().indexOf("<"+elementType.toUpperCase());

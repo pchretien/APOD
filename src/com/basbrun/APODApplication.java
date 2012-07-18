@@ -39,6 +39,7 @@ import android.preference.PreferenceManager;
 // application file. android:name="com.basbrun.APODApplication"
 public class APODApplication extends Application
 {
+	// APODDataProvider singleton
 	private static APODDataProvider dataProvider = null;
 
 	@Override
@@ -46,10 +47,13 @@ public class APODApplication extends Application
 	{
 		super.onCreate();
 		
+		// Get the preferences of the user to construct the APODDataProvider.
+		// The preferences are used to determine if the caching is enabled.
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		dataProvider = new APODDataProvider(preferences);
 	}
 
+	// Return the APODDataProvider singleton
 	public APODDataProvider getDataProvider() {
 		return dataProvider;
 	}

@@ -46,6 +46,7 @@ public class APODDataProvider
 		this.preferences = preferences;
 	}
 	
+	// Return the APOD URL root
 	public String getAPODRoot()
 	{
 		return APODDataConnector.getDomainRoot();
@@ -75,41 +76,8 @@ public class APODDataProvider
 		String page = "";
 		APODData.ApodContentType apodContentType = APODData.ApodContentType.NONE;
 		
-			
-		if(	date.get(Calendar.YEAR)<1995 || 
-			(date.get(Calendar.YEAR) == 1995 && date.get(Calendar.MONTH) < 5) || 
-			(date.get(Calendar.YEAR) == 1995 && date.get(Calendar.MONTH) == 5 && date.get(Calendar.DATE) < 20 && date.get(Calendar.DATE) != 16))
-		{
-			apodData = new APODData(
-				APODData.ApodContentType.ERROR,
-				date,
-				null,
-				src,
-				page,
-				APODDataConnector.getDomainRoot() + APODDataConnector.formatFileName(date, "html", "ap"),
-				description,
-				"There are not APOD before June 16th 1995 and for June 17th, 18th and 19th 1995");	
-			
+		if(!dateValidation(date, src, description, page))
 			return null;
-		}
-		
-		Calendar today = Calendar.getInstance();		
-		if(	date.get(Calendar.YEAR) > today.get(Calendar.YEAR) ||
-			(date.get(Calendar.YEAR) == today.get(Calendar.YEAR) && date.get(Calendar.MONTH) > today.get(Calendar.MONTH)) ||
-			(date.get(Calendar.YEAR) == today.get(Calendar.YEAR) && date.get(Calendar.MONTH) == today.get(Calendar.MONTH) && date.get(Calendar.DATE) > today.get(Calendar.DATE)) )
-		{
-			apodData = new APODData(
-				APODData.ApodContentType.ERROR,
-				date,
-				null,
-				src,
-				page,
-				APODDataConnector.getDomainRoot() + APODDataConnector.formatFileName(date, "html", "ap"),
-				description,
-				"There are not APOD for dates after today");	
-			
-			return null;
-		}
 
 		// Get the APOD web page HTML content 
 		page = APODDataConnector.GetHtml(date, preferences.getBoolean("caching", true));
@@ -144,64 +112,97 @@ public class APODDataProvider
 		}
 
 		// Instantiate the right APODData object.
-		switch(apodContentType)
-		{
-		case IMG:
-			Bitmap bmp = APODDataConnector.getBitmap(date, src, preferences.getBoolean("caching", true));				
-			apodData = new APODData(
-					apodContentType,
-					date,
-					bmp,
-					src,
-					page,
-					APODDataConnector.getDomainRoot() + APODDataConnector.formatFileName(date, "html", "ap"),
-					description,
-					error);			
-			
-			break;
-
-		case IFRAME:
-			// Instantiate an APODData for a video type APOD
-			apodData = new APODData(
-					apodContentType,
-					date,
-					null,
-					src,
-					page,
-					APODDataConnector.getDomainRoot() + APODDataConnector.formatFileName(date, "html", "ap"),
-					description,
-					error);
-			break;
-
-		case ERROR:
-			// Return an error
-			apodData = new APODData(
-					apodContentType,
-					date,
-					null,
-					null,
-					null,
-					APODDataConnector.getDomainRoot() + APODDataConnector.formatFileName(date, "html", "ap"),
-					description,
-					error);
-			break;
-
-		case NONE:
-			apodData = new APODData(
-					apodContentType,
-					date,
-					null,
-					src,
-					page,
-					APODDataConnector.getDomainRoot() + APODDataConnector.formatFileName(date, "html", "ap"),
-					description,
-					error);		
-			break;
-		}		
+		apodDataBuilder(date, src, error, description, page, apodContentType);		
 
 		return apodData;
 	}
+
+	// Build the right APODData object in regard to the information found in the APOD html page
+	private void apodDataBuilder(
+			Calendar date, 
+			String src, 
+			String error,
+			String description, 
+			String page,
+			APODData.ApodContentType apodContentType) 
+	{
+		apodData = new APODData(
+			apodContentType,
+			date,
+			null,
+			src,
+			page,
+			APODDataConnector.getDomainRoot() + APODDataConnector.formatFileName(date, "html", "ap"),
+			description,
+			error);		
+		
+		switch(apodContentType)
+		{
+		case IMG:
+			// This is an image type APOD
+			Bitmap bmp = APODDataConnector.getBitmap(date, src, preferences.getBoolean("caching", true));				
+			apodData.setBitmap(bmp);			
+			break;
+
+		case IFRAME:
+			break;
+
+		case ERROR:
+			break;
+
+		case NONE:
+			break;
+		}
+	}
+
+	// Check if the requested date is in the range of the APOD publications
+	private boolean dateValidation(
+			Calendar date, 
+			String src, 
+			String description,
+			String page) 
+	{
+		// Validate date range
+		if(	date.get(Calendar.YEAR)<1995 || 
+			(date.get(Calendar.YEAR) == 1995 && date.get(Calendar.MONTH) < 5) || 
+			(date.get(Calendar.YEAR) == 1995 && date.get(Calendar.MONTH) == 5 && date.get(Calendar.DATE) < 20 && date.get(Calendar.DATE) != 16))
+		{
+			apodData = new APODData(
+				APODData.ApodContentType.ERROR,
+				date,
+				null,
+				src,
+				page,
+				APODDataConnector.getDomainRoot() + APODDataConnector.formatFileName(date, "html", "ap"),
+				description,
+				"There are not APOD before June 16th 1995 and for June 17th, 18th and 19th 1995");	
+			
+			return false;
+		}
+		
+		// Validate date range
+		Calendar today = Calendar.getInstance();		
+		if(	date.get(Calendar.YEAR) > today.get(Calendar.YEAR) ||
+			(date.get(Calendar.YEAR) == today.get(Calendar.YEAR) && date.get(Calendar.MONTH) > today.get(Calendar.MONTH)) ||
+			(date.get(Calendar.YEAR) == today.get(Calendar.YEAR) && date.get(Calendar.MONTH) == today.get(Calendar.MONTH) && date.get(Calendar.DATE) > today.get(Calendar.DATE)) )
+		{
+			apodData = new APODData(
+				APODData.ApodContentType.ERROR,
+				date,
+				null,
+				src,
+				page,
+				APODDataConnector.getDomainRoot() + APODDataConnector.formatFileName(date, "html", "ap"),
+				description,
+				"There are not APOD for dates after today");	
+			
+			return false;
+		}
+		
+		return true;
+	}
 	
+	// Return the full ath of the bitmap in cache to load into the WebView
 	public String getBitmapPathFromCache(Calendar date)
 	{
 		return APODDataConnector.getBitmapPathFromCache(date);		
