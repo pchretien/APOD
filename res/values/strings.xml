@@ -11,5 +11,6 @@
     <string name="menu_previous">Previous</string>
     <string name="menu_next">Next</string>
     <string name="menu_settings">Preferences</string>
+    <string name="menu_search">Search</string>
 
 </resources>

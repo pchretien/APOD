@@ -24,6 +24,7 @@
         <activity android:name="APODActivity"></activity>
         <activity android:name="APODSettingsActivity"></activity>
         <activity android:name="APODPreferences"></activity>
+        <activity android:name="APODSearchActivity"></activity>
     </application>
 
 </manifest>

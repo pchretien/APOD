@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/menu_set_date" android:title="@string/menu_set_date"></item>
-    <item android:id="@+id/menu_settings" android:title="@string/menu_settings"></item>
-    <item android:id="@+id/menu_about" android:title="@string/menu_about"></item>
+    <item android:id="@+id/menu_set_date" android:title="@string/menu_set_date" android:icon="@drawable/calendar5"></item>
+    <item android:id="@+id/menu_settings" android:title="@string/menu_settings" android:icon="@drawable/settings5"></item>
+    <item android:id="@+id/menu_about" android:title="@string/menu_about" android:icon="@drawable/about5"></item>
+    <item android:id="@+id/menu_search" android:title="@string/menu_search" android:icon="@drawable/search5"></item>
 </menu>

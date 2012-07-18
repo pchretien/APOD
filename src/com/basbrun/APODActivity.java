@@ -296,6 +296,11 @@ public class APODActivity extends Activity //implements OnClickListener
         		.show();
 
                 return true;
+                
+        	case R.id.menu_search:
+        		
+        		startActivity(new Intent(APODActivity.this, APODSearchActivity.class));
+                return true;
 
             default:
                 return super.onOptionsItemSelected(item);
