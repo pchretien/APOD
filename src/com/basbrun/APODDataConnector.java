@@ -64,12 +64,12 @@ public class APODDataConnector
 	}
 	
 	// Get the HTML page content for the date received in parameter...
-	public String GetHtml(Calendar date, boolean caching)
+	public String GetHtml(Calendar date, boolean caching, IAPODFormatter formatter)
 	{
 		String pageSource;	
 		
 		// Build the filename from the date
-		String filename = formatFileName(date, "html", "ap");
+		String filename = formatter.formatFilename();
 			
 		// Check if the object is in the cache
 		if(caching)
@@ -155,14 +155,14 @@ public class APODDataConnector
 	}
 
 	// Download a bitmap from the web
-	public Bitmap getBitmap(Calendar date, String src, boolean caching)
+	public Bitmap getBitmap(Calendar date, String src, boolean caching, IAPODFormatter formatter)
 	{
 		Bitmap bmp = null;
 		
 		// Check for the bitmap in the cache
 		if(caching)
 		{
-			bmp = getBitmapFromCache(date);
+			bmp = getBitmapFromCache(date, formatter);
 			if(bmp != null)
 				return bmp;
 		}
@@ -176,7 +176,7 @@ public class APODDataConnector
 			
 			// If caching is activated, save the bitmap to the cache
 			if(caching)
-				saveBitmapToCache(bmp, date);
+				saveBitmapToCache(bmp, date, formatter);
 			
 			return bmp;
 		}
@@ -187,41 +187,41 @@ public class APODDataConnector
 	}
 	
 	// Read a bitmap from the cache
-	private Bitmap getBitmapFromCache(Calendar date)
+	private Bitmap getBitmapFromCache(Calendar date, IAPODFormatter formatter)
 	{
 		String dir = checkApodDirectory();  
-		String filename = formatFileName(date, "jpg", "");		
+		String filename = formatter.formatFilename();		
 
 		return BitmapFactory.decodeFile(dir + File.separator + filename);
 	}
 	
 	// Check if a bitmap is in the cache
-	private boolean isBitmapCached(Calendar date)
+	private boolean isBitmapCached(Calendar date, IAPODFormatter formatter)
 	{
 		String dir = checkApodDirectory();  
-		String filename = formatFileName(date, "jpg", "");	
+		String filename = formatter.formatFilename();	
 		File file = new File(dir + File.separator + filename);
 		return file.exists();
 	}
 	
 	// Get the full path of the image in the cache to load the WebView
-	public String getBitmapPathFromCache(Calendar date)
+	public String getBitmapPathFromCache(Calendar date, IAPODFormatter formatter)
 	{
-		if(!isBitmapCached(date))
+		if(!isBitmapCached(date, formatter))
 			return null;
 		
-		return checkApodDirectory() + File.separator + formatFileName(date, "jpg", "");
+		return checkApodDirectory() + File.separator + formatter.formatFilename();
 	}
 
 	// Add a bitmap to the cache
-	private void saveBitmapToCache(Bitmap bmp, Calendar date)
+	private void saveBitmapToCache(Bitmap bmp, Calendar date, IAPODFormatter formatter)
 	{
 		if(bmp == null)
 			return;
 		
 		try
 		{
-			String filename = formatFileName(date, "jpg", "");			
+			String filename = formatter.formatFilename();			
 			File imageFile = new File( checkApodDirectory() + File.separator + filename);
 			FileOutputStream fileOutputStream = new FileOutputStream(imageFile);
 			bmp.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
@@ -243,19 +243,6 @@ public class APODDataConnector
 			dirFile.mkdir();
 		
 		return dir;
-	}
-	
-	// Build the filename of the html page to download using the date of the requested APOD
-	public String formatFileName(Calendar date, String extension, String prefix)
-	{
-		// Check if the picture exist on disk ...
-		String filename = String.format(
-		prefix+"%02d%02d%02d."+extension, 
-		(date.get(Calendar.YEAR)<2000)?date.get(Calendar.YEAR)-1900:date.get(Calendar.YEAR)-2000, 
-		date.get(Calendar.MONTH)+1, 
-		date.get(Calendar.DATE));
-		
-		return filename;
 	}
 	
 	// Erase all files in the cache

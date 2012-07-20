@@ -83,7 +83,11 @@ public class APODDataProvider
 			return null;
 
 		// Get the APOD web page HTML content 
-		page = dataConnector.GetHtml(date, preferences.getBoolean("caching", true));
+		page = dataConnector.GetHtml(
+				date, 
+				preferences.getBoolean("caching", true), 
+				new APODFormatter(date, "ap", "html"));
+		
 		if(page == null)
 		{
 			apodContentType = APODData.ApodContentType.ERROR;
@@ -144,7 +148,7 @@ public class APODDataProvider
 			null,
 			src,
 			page,
-			dataConnector.getDomainRoot() + dataConnector.formatFileName(date, "html", "ap"),
+			dataConnector.getDomainRoot() + new APODFormatter(date, "ap", "html").formatFilename(),
 			description,
 			error);		
 		
@@ -152,7 +156,11 @@ public class APODDataProvider
 		{
 		case IMG:
 			// This is an image type APOD
-			Bitmap bmp = dataConnector.getBitmap(date, src, preferences.getBoolean("caching", true));				
+			Bitmap bmp = dataConnector.getBitmap(
+					date, 
+					src, 
+					preferences.getBoolean("caching", true),
+					new APODFormatter(date, "", "jpg"));				
 			apodData.setBitmap(bmp);			
 			break;
 
@@ -182,7 +190,7 @@ public class APODDataProvider
 				null,
 				src,
 				page,
-				dataConnector.getDomainRoot() + dataConnector.formatFileName(date, "html", "ap"),
+				dataConnector.getDomainRoot() + new APODFormatter(date, "ap", "html").formatFilename(),
 				description,
 				"There are not APOD before June 16th 1995 and for June 17th, 18th and 19th 1995");	
 			
@@ -201,7 +209,7 @@ public class APODDataProvider
 				null,
 				src,
 				page,
-				dataConnector.getDomainRoot() + dataConnector.formatFileName(date, "html", "ap"),
+				dataConnector.getDomainRoot() + new APODFormatter(date, "ap", "html").formatFilename(),
 				description,
 				"There are not APOD for dates after today");	
 			
@@ -214,6 +222,6 @@ public class APODDataProvider
 	// Return the full ath of the bitmap in cache to load into the WebView
 	public String getBitmapPathFromCache(Calendar date)
 	{
-		return dataConnector.getBitmapPathFromCache(date);		
+		return dataConnector.getBitmapPathFromCache(date, new APODFormatter(date, "", "jpg"));		
 	}
 }
