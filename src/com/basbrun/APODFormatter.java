@@ -2,7 +2,7 @@ package com.basbrun;
 
 import java.util.Calendar;
 
-public class APODFormatter implements IAPODFormatter 
+public class APODFormatter implements IWebDataConnectorFormatter 
 {
 	private Calendar date;
 	private String prefix;

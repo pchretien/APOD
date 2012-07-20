@@ -41,12 +41,12 @@ public class APODDataProvider
 	private APODData apodData = null;
 	private SharedPreferences preferences = null;
 	private String domainRoot = "http://apod.nasa.gov/apod/";
-	private APODDataConnector dataConnector= null;
+	private WebDataConnector dataConnector= null;
 	
 	public APODDataProvider(SharedPreferences preferences)
 	{
 		this.preferences = preferences;
-		dataConnector = new APODDataConnector(domainRoot);
+		dataConnector = new WebDataConnector(domainRoot);
 	}
 	
 	// Return the APOD URL root
