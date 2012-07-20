@@ -162,10 +162,6 @@ public class APODActivity extends Activity //implements OnClickListener
 	    		imgView.setOnTouchListener(gestureListener);
 	    		break;
 	
-	    	// Undefined contend ...
-	    	case NONE:
-	    		break;
-	
 	    	// Reporting errors to the user ...
 	    	case ERROR:
 	    		break;
@@ -188,14 +184,10 @@ public class APODActivity extends Activity //implements OnClickListener
 	private void checkForErrors() {
 		// If there is a connection error or an out of date error, the
         // APODDataProvider returns an APODData object of type NONE or ERROR.
-        if(apodData.getApodDataType() == ApodContentType.NONE ||
-           apodData.getApodDataType() == ApodContentType.ERROR)
+        if(apodData.getApodDataType() == ApodContentType.ERROR)
         {
         	TextView aboutMsg = new TextView(this);
-        	if(apodData.getApodDataType() == ApodContentType.ERROR)
-        		aboutMsg.setText(apodData.getError());
-        	else
-        		aboutMsg.setText(" Connection error! Make sure you are connected to the internet. ");
+        	aboutMsg.setText(apodData.getError());        	
     		aboutMsg.setGravity(Gravity.CENTER_HORIZONTAL);
     		
         	new AlertDialog.Builder(this)

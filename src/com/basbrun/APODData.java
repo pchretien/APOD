@@ -38,12 +38,11 @@ public class APODData
 	{
 		IMG,
 		IFRAME,
-		NONE,
 		ERROR
 	}
 
 	// The type of the current APOD
-	private ApodContentType apodDataType;
+	private ApodContentType apodContentType;
 	
 	// The date of the currently displayed APOD
 	private Calendar date;
@@ -77,7 +76,7 @@ public class APODData
 			String description,
 			String error)
 	{
-		this.apodDataType = apodDataType;
+		this.apodContentType = apodDataType;
 		this.date = date;
 		this.bitmap = bitmap;
 		this.src = src;
@@ -106,7 +105,7 @@ public class APODData
 		return src;
 	}
 	public ApodContentType getApodDataType() {
-		return apodDataType;
+		return apodContentType;
 	}
 	public String getError() {
 		return error;

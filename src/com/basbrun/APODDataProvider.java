@@ -74,14 +74,19 @@ public class APODDataProvider
 		String error = "";
 		String description = "";
 		String page = "";
-		APODData.ApodContentType apodContentType = APODData.ApodContentType.NONE;
+		APODData.ApodContentType apodContentType = APODData.ApodContentType.ERROR;
 		
 		if(!dateValidation(date, src, description, page))
 			return null;
 
 		// Get the APOD web page HTML content 
 		page = APODDataConnector.GetHtml(date, preferences.getBoolean("caching", true));
-		if(page != null)
+		if(page == null)
+		{
+			apodContentType = APODData.ApodContentType.ERROR;
+			error = "Connection error! Make sure you are connected to the internet!";
+		}
+		else
 		{
 			// Parse the page to find an <IMG/> element
 			src = APODHtmlParser.FindFirstElementSrc(page, "IMG");
@@ -108,8 +113,12 @@ public class APODDataProvider
 			}
 
 			if(src == null)
-				apodContentType = APODData.ApodContentType.NONE;
+			{
+				error = "Unable to read the APOD web page content!";
+				apodContentType = APODData.ApodContentType.ERROR;
+			}
 		}
+		
 
 		// Instantiate the right APODData object.
 		apodDataBuilder(date, src, error, description, page, apodContentType);		
@@ -147,10 +156,7 @@ public class APODDataProvider
 		case IFRAME:
 			break;
 
-		case ERROR:
-			break;
-
-		case NONE:
+		case ERROR:			
 			break;
 		}
 	}
