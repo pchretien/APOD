@@ -74,7 +74,9 @@ public class APODPreferences extends PreferenceActivity
             case DialogInterface.BUTTON_POSITIVE:
             	// If the user click Yes in the confirmation dialog,
             	// all files in the cache are deleted
-            	APODDataConnector.clearCache();
+            	APODDataConnector dataConnector = new APODDataConnector();
+            	dataConnector.clearCache();
+            	
             	showDialog(CLEAR_CACHE_ALERT_DONE);            	
                 break;
 

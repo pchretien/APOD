@@ -40,16 +40,19 @@ public class APODDataProvider
 {
 	private APODData apodData = null;
 	private SharedPreferences preferences = null;
+	private String domainRoot = "http://apod.nasa.gov/apod/";
+	private APODDataConnector dataConnector= null;
 	
 	public APODDataProvider(SharedPreferences preferences)
 	{
 		this.preferences = preferences;
+		dataConnector = new APODDataConnector(domainRoot);
 	}
 	
 	// Return the APOD URL root
 	public String getAPODRoot()
 	{
-		return APODDataConnector.getDomainRoot();
+		return dataConnector.getDomainRoot();
 	}
 
 	// Return the current APOD data
@@ -80,7 +83,7 @@ public class APODDataProvider
 			return null;
 
 		// Get the APOD web page HTML content 
-		page = APODDataConnector.GetHtml(date, preferences.getBoolean("caching", true));
+		page = dataConnector.GetHtml(date, preferences.getBoolean("caching", true));
 		if(page == null)
 		{
 			apodContentType = APODData.ApodContentType.ERROR;
@@ -94,7 +97,7 @@ public class APODDataProvider
 			if(src != null)
 			{
 				// Load the HTML text and set the APOD type
-				src = APODDataConnector.getDomainRoot() + src;
+				src = dataConnector.getDomainRoot() + src;
 				description = APODHtmlParser.getDescription(page, "IMG");
 				apodContentType = APODData.ApodContentType.IMG;
 			}
@@ -141,7 +144,7 @@ public class APODDataProvider
 			null,
 			src,
 			page,
-			APODDataConnector.getDomainRoot() + APODDataConnector.formatFileName(date, "html", "ap"),
+			dataConnector.getDomainRoot() + dataConnector.formatFileName(date, "html", "ap"),
 			description,
 			error);		
 		
@@ -149,7 +152,7 @@ public class APODDataProvider
 		{
 		case IMG:
 			// This is an image type APOD
-			Bitmap bmp = APODDataConnector.getBitmap(date, src, preferences.getBoolean("caching", true));				
+			Bitmap bmp = dataConnector.getBitmap(date, src, preferences.getBoolean("caching", true));				
 			apodData.setBitmap(bmp);			
 			break;
 
@@ -179,7 +182,7 @@ public class APODDataProvider
 				null,
 				src,
 				page,
-				APODDataConnector.getDomainRoot() + APODDataConnector.formatFileName(date, "html", "ap"),
+				dataConnector.getDomainRoot() + dataConnector.formatFileName(date, "html", "ap"),
 				description,
 				"There are not APOD before June 16th 1995 and for June 17th, 18th and 19th 1995");	
 			
@@ -198,7 +201,7 @@ public class APODDataProvider
 				null,
 				src,
 				page,
-				APODDataConnector.getDomainRoot() + APODDataConnector.formatFileName(date, "html", "ap"),
+				dataConnector.getDomainRoot() + dataConnector.formatFileName(date, "html", "ap"),
 				description,
 				"There are not APOD for dates after today");	
 			
@@ -211,6 +214,6 @@ public class APODDataProvider
 	// Return the full ath of the bitmap in cache to load into the WebView
 	public String getBitmapPathFromCache(Calendar date)
 	{
-		return APODDataConnector.getBitmapPathFromCache(date);		
+		return dataConnector.getBitmapPathFromCache(date);		
 	}
 }
