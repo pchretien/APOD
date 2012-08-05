@@ -2,6 +2,8 @@ package com.basbrun;
 
 import java.util.Calendar;
 
+// Implementation of the WebDataConnectorFormatter that generate
+// a filename from the date, a prefix and an extension.
 public class APODFormatter implements IWebDataConnectorFormatter 
 {
 	private Calendar date;

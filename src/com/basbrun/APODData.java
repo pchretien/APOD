@@ -40,6 +40,18 @@ public class APODData
 		IFRAME,
 		ERROR
 	}
+	
+	private static final String cachingDirectory = "APOD";
+	public static String getCachingDirectory()
+	{
+		return cachingDirectory;
+	}
+	
+	private static final String domainRoot = "http://apod.nasa.gov/apod/";
+	public static String getDomainRoot()
+	{
+		return domainRoot;
+	}
 
 	// The type of the current APOD
 	private ApodContentType apodContentType;

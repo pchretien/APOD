@@ -46,16 +46,14 @@ import android.os.Environment;
 // Connect to the internet to download web pages and pictures. 
 // The data connector also provide simple caching to save on bandwidth
 public class WebDataConnector
-{
+{	
 	private String domainRoot = "";
+	private String cachingDirectory = "";
 	
-	public WebDataConnector()
-	{		
-	}
-	
-	public WebDataConnector(String domainRoot)
+	public WebDataConnector(String domainRoot, String cachingDirectory)
 	{
 		this.domainRoot = domainRoot;
+		this.cachingDirectory = cachingDirectory;
 	}
 	
 	public String getDomainRoot()
@@ -114,7 +112,7 @@ public class WebDataConnector
 	{	
 		try
 		{
-			FileInputStream fstream = new FileInputStream(checkApodDirectory() + File.separator + filename);
+			FileInputStream fstream = new FileInputStream(checkCachingDirectory() + File.separator + filename);
 			DataInputStream in = new DataInputStream(fstream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));			
 			
@@ -142,7 +140,7 @@ public class WebDataConnector
 	{
 		try 
 		{
-			String fullPath = checkApodDirectory() + File.separator + filename;
+			String fullPath = checkCachingDirectory() + File.separator + filename;
 			FileWriter fr = new FileWriter(new File(fullPath));
 			BufferedWriter out = new BufferedWriter(fr);
 			out.write(html);
@@ -189,7 +187,7 @@ public class WebDataConnector
 	// Read a bitmap from the cache
 	private Bitmap getBitmapFromCache(Calendar date, IWebDataConnectorFormatter formatter)
 	{
-		String dir = checkApodDirectory();  
+		String dir = checkCachingDirectory();  
 		String filename = formatter.formatFilename();		
 
 		return BitmapFactory.decodeFile(dir + File.separator + filename);
@@ -198,7 +196,7 @@ public class WebDataConnector
 	// Check if a bitmap is in the cache
 	private boolean isBitmapCached(Calendar date, IWebDataConnectorFormatter formatter)
 	{
-		String dir = checkApodDirectory();  
+		String dir = checkCachingDirectory();  
 		String filename = formatter.formatFilename();	
 		File file = new File(dir + File.separator + filename);
 		return file.exists();
@@ -210,7 +208,7 @@ public class WebDataConnector
 		if(!isBitmapCached(date, formatter))
 			return null;
 		
-		return checkApodDirectory() + File.separator + formatter.formatFilename();
+		return checkCachingDirectory() + File.separator + formatter.formatFilename();
 	}
 
 	// Add a bitmap to the cache
@@ -222,7 +220,7 @@ public class WebDataConnector
 		try
 		{
 			String filename = formatter.formatFilename();			
-			File imageFile = new File( checkApodDirectory() + File.separator + filename);
+			File imageFile = new File( checkCachingDirectory() + File.separator + filename);
 			FileOutputStream fileOutputStream = new FileOutputStream(imageFile);
 			bmp.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
 			fileOutputStream.flush();
@@ -235,9 +233,9 @@ public class WebDataConnector
 	
 	// Validate tht the APOD cache directory exist. If it does not exist, it
 	// is created and the path returned to the caller
-	private String checkApodDirectory() 
+	private String checkCachingDirectory() 
 	{
-		String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "APOD";
+		String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + cachingDirectory;
 		File dirFile = new File(dir);
 		if(!dirFile.exists())
 			dirFile.mkdir();
@@ -248,7 +246,7 @@ public class WebDataConnector
 	// Erase all files in the cache
 	public void clearCache()
 	{
-		File directory = new File(checkApodDirectory());
+		File directory = new File(checkCachingDirectory());
 		File[] files = directory.listFiles();	
 		
 		if(files == null)

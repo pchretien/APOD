@@ -291,13 +291,22 @@ public class APODActivity extends Activity //implements OnClickListener
                 
         	case R.id.menu_search:
         		
-        		startActivity(new Intent(APODActivity.this, APODSearchActivity.class));
+        		//startActivity(new Intent(APODActivity.this, APODSearchActivity.class));
+        		this.onSearchRequested();
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+    
+    @Override
+    public boolean onSearchRequested() {
+         Bundle appData = new Bundle();
+         appData.putBoolean("toto", true);
+         startSearch(null, false, appData, false);
+         return true;
+     }
 
     // Load the APOD of the date after the current date
 	private void loadNext() {

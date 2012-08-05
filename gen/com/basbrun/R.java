@@ -27,25 +27,23 @@ public final class R {
         public static final int prev_selector=0x7f02000d;
         public static final int search=0x7f02000e;
         public static final int search5=0x7f02000f;
-        public static final int search_pressed=0x7f020010;
-        public static final int search_released=0x7f020011;
-        public static final int search_selector=0x7f020012;
-        public static final int settings=0x7f020013;
-        public static final int settings5=0x7f020014;
+        public static final int settings=0x7f020010;
+        public static final int settings5=0x7f020011;
     }
     public static final class id {
         public static final int button_next=0x7f070002;
         public static final int button_prev=0x7f070000;
         public static final int button_today=0x7f070001;
-        public static final int creditsText=0x7f070009;
-        public static final int editText1=0x7f070006;
-        public static final int imageButton1=0x7f070007;
+        public static final int creditsText=0x7f07000a;
         public static final int imageViewAPOD=0x7f070003;
-        public static final int menu_about=0x7f07000c;
-        public static final int menu_search=0x7f07000d;
-        public static final int menu_set_date=0x7f07000a;
-        public static final int menu_settings=0x7f07000b;
-        public static final int splashScreenImage=0x7f070008;
+        public static final int listViewSearchResult=0x7f070008;
+        public static final int menu_about=0x7f07000d;
+        public static final int menu_search=0x7f07000e;
+        public static final int menu_set_date=0x7f07000b;
+        public static final int menu_settings=0x7f07000c;
+        public static final int splashScreenImage=0x7f070009;
+        public static final int textViewSearchQuery=0x7f070007;
+        public static final int textViewSearchResult=0x7f070006;
         public static final int webViewDescription=0x7f070004;
         public static final int webViewPicture=0x7f070005;
     }
@@ -71,8 +69,12 @@ public final class R {
         public static final int menu_set_date=0x7f050002;
         public static final int menu_settings=0x7f05000a;
         public static final int menu_today=0x7f050004;
+        public static final int search_hint=0x7f05000c;
+        public static final int search_results_for=0x7f05000d;
+        public static final int search_unknown_query=0x7f05000e;
     }
     public static final class xml {
         public static final int preferences=0x7f040000;
+        public static final int searchable=0x7f040001;
     }
 }
