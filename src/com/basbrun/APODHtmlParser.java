@@ -27,6 +27,9 @@
 
 package com.basbrun;
 
+import java.util.ArrayList;
+import java.util.List;
+
 // Custom very very basic HTML parser
 // Any suggestion for a nice html parser on Android?
 public class APODHtmlParser
@@ -61,5 +64,48 @@ public class APODHtmlParser
     	page = "<html>" + page.substring(start, stop) + "</html>";
 
     	return page;
+	}
+	
+	public static List<APODSearchItem> parseSearchResults(String page)
+	{
+		List<APODSearchItem> list = new ArrayList<APODSearchItem>();
+		
+		String pageUp = page.toUpperCase();
+		int index = pageUp.indexOf("<P>");
+		while(index > -1)
+		{
+			if(pageUp.substring(index+3).startsWith("<P>"))
+				break;
+			
+			// Get the item full content
+			int endIndex = pageUp.substring(index).indexOf("<P>", 1);
+			String itemContent = page.substring(index, index+endIndex);
+			
+			// Get the title
+			int titleIndex = 0;
+			for(int i=0; i<5; i++)
+				titleIndex += itemContent.substring(titleIndex).indexOf(">", 1);				
+			int endTitleIndex = itemContent.substring(titleIndex).indexOf("<");
+			String title = itemContent.substring(titleIndex+1, titleIndex+endTitleIndex).trim();
+			
+			// Get the date
+			int dateIndex = title.indexOf(":")+1;
+			int endDateIndex = title.indexOf("-");
+			String date = title.substring(dateIndex, endDateIndex).trim();
+			
+			// Remove the date from the title
+			title = title.substring(endDateIndex+1).trim();
+					
+			// Get the page path
+			String pagePath = "";
+			
+			// Add to the list
+			list.add(new APODSearchItem(title, date, pagePath));
+			
+			// Get the next item in the page ...
+			index += pageUp.substring(index).indexOf("<P>", 1);
+		}
+		
+		return list;
 	}
 }

@@ -62,7 +62,7 @@ public class WebDataConnector
 	}
 	
 	// Get the HTML page content for the date received in parameter...
-	public String GetHtml(Calendar date, boolean caching, IWebDataConnectorFormatter formatter)
+	public String GetHtml(boolean caching, IWebDataConnectorFormatter formatter)
 	{
 		String pageSource;	
 		
@@ -153,14 +153,14 @@ public class WebDataConnector
 	}
 
 	// Download a bitmap from the web
-	public Bitmap getBitmap(Calendar date, String src, boolean caching, IWebDataConnectorFormatter formatter)
+	public Bitmap getBitmap(String src, boolean caching, IWebDataConnectorFormatter formatter)
 	{
 		Bitmap bmp = null;
 		
 		// Check for the bitmap in the cache
 		if(caching)
 		{
-			bmp = getBitmapFromCache(date, formatter);
+			bmp = getBitmapFromCache(formatter);
 			if(bmp != null)
 				return bmp;
 		}
@@ -174,7 +174,7 @@ public class WebDataConnector
 			
 			// If caching is activated, save the bitmap to the cache
 			if(caching)
-				saveBitmapToCache(bmp, date, formatter);
+				saveBitmapToCache(bmp, formatter);
 			
 			return bmp;
 		}
@@ -185,7 +185,7 @@ public class WebDataConnector
 	}
 	
 	// Read a bitmap from the cache
-	private Bitmap getBitmapFromCache(Calendar date, IWebDataConnectorFormatter formatter)
+	private Bitmap getBitmapFromCache(IWebDataConnectorFormatter formatter)
 	{
 		String dir = checkCachingDirectory();  
 		String filename = formatter.formatFilename();		
@@ -212,7 +212,7 @@ public class WebDataConnector
 	}
 
 	// Add a bitmap to the cache
-	private void saveBitmapToCache(Bitmap bmp, Calendar date, IWebDataConnectorFormatter formatter)
+	private void saveBitmapToCache(Bitmap bmp, IWebDataConnectorFormatter formatter)
 	{
 		if(bmp == null)
 			return;

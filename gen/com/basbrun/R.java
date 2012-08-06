@@ -37,10 +37,12 @@ public final class R {
         public static final int creditsText=0x7f07000a;
         public static final int imageViewAPOD=0x7f070003;
         public static final int listViewSearchResult=0x7f070008;
-        public static final int menu_about=0x7f07000d;
-        public static final int menu_search=0x7f07000e;
-        public static final int menu_set_date=0x7f07000b;
-        public static final int menu_settings=0x7f07000c;
+        public static final int menu_about=0x7f07000f;
+        public static final int menu_search=0x7f070010;
+        public static final int menu_set_date=0x7f07000d;
+        public static final int menu_settings=0x7f07000e;
+        public static final int searchItemDate=0x7f07000c;
+        public static final int serchItemTitle=0x7f07000b;
         public static final int splashScreenImage=0x7f070009;
         public static final int textViewSearchQuery=0x7f070007;
         public static final int textViewSearchResult=0x7f070006;
@@ -52,6 +54,7 @@ public final class R {
         public static final int apod_picture=0x7f030001;
         public static final int apod_search=0x7f030002;
         public static final int apod_splash_screen=0x7f030003;
+        public static final int search_item=0x7f030004;
     }
     public static final class menu {
         public static final int apod_menu=0x7f060000;

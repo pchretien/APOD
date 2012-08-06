@@ -29,6 +29,7 @@ package com.basbrun;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -83,7 +84,6 @@ public class APODDataProvider
 
 		// Get the APOD web page HTML content 
 		page = dataConnector.GetHtml(
-				date, 
 				preferences.getBoolean("caching", true), 
 				new APODFormatter(date, "ap", "html"));
 		
@@ -156,7 +156,6 @@ public class APODDataProvider
 		case IMG:
 			// This is an image type APOD
 			Bitmap bmp = dataConnector.getBitmap(
-					date, 
 					src, 
 					preferences.getBoolean("caching", true),
 					new APODFormatter(date, "", "jpg"));				
@@ -222,5 +221,14 @@ public class APODDataProvider
 	public String getBitmapPathFromCache(Calendar date)
 	{
 		return dataConnector.getBitmapPathFromCache(date, new APODFormatter(date, "", "jpg"));		
+	}
+	
+	public List<APODSearchItem> searchAPOD(String query)
+	{
+		WebDataConnector webDataConnector = new WebDataConnector("http://apod.nasa.gov/cgi-bin/apod/", null);
+		String page = webDataConnector.GetHtml(false, new APODSearchFormatter(query));
+		List<APODSearchItem> list = APODHtmlParser.parseSearchResults(page);
+		
+		return list;
 	}
 }
