@@ -4,39 +4,42 @@ public class APODSearchItem
 {
 	private String title;
 	private String date;
-	private String page;
+	private String pagePath;
 	
 	public APODSearchItem(String title, String date, String page) 
 	{
 		super();
 		this.title = title;
 		this.date = date;
-		this.page = page;
+		this.pagePath = page;
 	}
 	
 	public String getTitle() 
 	{
 		return title;
 	}
+	
 	public void setTitle(String title) 
 	{
 		this.title = title;
 	}
+	
 	public String getDate() 
 	{
 		return date;
 	}
+	
 	public void setDate(String date) 
 	{
 		this.date = date;
 	}
 
-	public String getPage() {
-		return page;
+	public String getPagePath() {
+		return pagePath;
 	}
 
-	public void setPage(String page) {
-		this.page = page;
+	public void setPagePath(String pagePath) {
+		this.pagePath = pagePath;
 	}
 	
 }
