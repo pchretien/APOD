@@ -97,7 +97,9 @@ public class APODHtmlParser
 			title = title.substring(endDateIndex+1).trim();
 					
 			// Get the page path
-			String pagePath = "";
+			int pageIndex = itemContent.indexOf("apod.nasa.gov/apod/")+19;
+			int endPageIndex = itemContent.indexOf(">", pageIndex);
+			String pagePath = itemContent.substring(pageIndex, endPageIndex);
 			
 			// Add to the list
 			list.add(new APODSearchItem(title, date, pagePath));

@@ -3,6 +3,7 @@ package com.basbrun;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
@@ -59,14 +60,21 @@ public class APODSearchActivity extends Activity
 	
 	protected boolean onLongListItemClick(View v, int pos, long id) 
 	{
-		String message = "OnItemLongClick - " + listViewSearchResults.getItemAtPosition(pos).toString();
+		APODSearchItem item = (APODSearchItem)listViewSearchResults.getItemAtPosition(pos);
+		String message = "OnItemLongClick - " + item.getDate();
 		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();	
 		return true;
 	}
 	
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		String message = "OnItemClick - " + listViewSearchResults.getItemAtPosition(position).toString();
-		Toast.makeText(this, message,
-                Toast.LENGTH_SHORT).show();	
+	public void onListItemClick(ListView l, View v, int position, long id) 
+	{
+		APODSearchItem item = (APODSearchItem)listViewSearchResults.getItemAtPosition(position);
+		
+		ProgressDialog progressDialog = ProgressDialog.show(
+				this, 
+				this.getResources().getString(R.string.loading), 
+				this.getResources().getString(R.string.loading_your));
+		
+    	new APODAsyncLoader(item.getPagePath(), this, progressDialog, 0).execute();
 	}
 }

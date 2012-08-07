@@ -64,6 +64,30 @@ public class APODDataProvider
 
 		return apodData;
 	}
+	
+	public APODData getAPODByFilename(String filename)
+	{
+		// Extract the date form the filename
+		// Format is apYYMMDD.html
+		
+		int year = Integer.parseInt(filename.substring(2, 4));
+		
+		// This rule is good until 2094 ... :)
+		if(year > 94)
+			year += 1900;
+		else
+			year += 2000;
+		
+		int month = Integer.parseInt(filename.substring(4, 6));
+		int day = Integer.parseInt(filename.substring(6, 8));
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.YEAR, year);
+		calendar.set(Calendar.MONTH, month-1);
+		calendar.set(Calendar.DATE, day);
+		
+		return getAPODByDate(calendar);
+	}
 
 	// Return the APOD data for a specific day
 	public APODData getAPODByDate(Calendar date)
