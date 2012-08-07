@@ -26,7 +26,9 @@
         </activity>
         <activity android:name=".APODSettingsActivity"></activity>
         <activity android:name=".APODPreferences"></activity>
-        <activity android:name=".APODSearchActivity">
+        <activity 
+            android:name=".APODSearchActivity"
+            android:launchMode="singleTop">
             <intent-filter>
             	<action android:name="android.intent.action.SEARCH" />
         	</intent-filter>

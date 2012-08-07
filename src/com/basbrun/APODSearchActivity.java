@@ -69,12 +69,18 @@ public class APODSearchActivity extends Activity
 	public void onListItemClick(ListView l, View v, int position, long id) 
 	{
 		APODSearchItem item = (APODSearchItem)listViewSearchResults.getItemAtPosition(position);
+		//ProgressDialog progressDialog = ProgressDialog.show(this, this.getResources().getString(R.string.loading), this.getResources().getString(R.string.loading_your));
+		try
+		{
+			APODApplication app = (APODApplication)getApplication();
+			app.getDataProvider().getAPODByFilename(item.getPagePath());
+		}
+		finally
+		{
+//			if(progressDialog != null )
+//				progressDialog.dismiss();
+		}
 		
-		ProgressDialog progressDialog = ProgressDialog.show(
-				this, 
-				this.getResources().getString(R.string.loading), 
-				this.getResources().getString(R.string.loading_your));
-		
-    	new APODAsyncLoader(item.getPagePath(), this, progressDialog, 0).execute();
+    	finish();
 	}
 }

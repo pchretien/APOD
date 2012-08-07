@@ -94,7 +94,13 @@ public class APODActivity extends Activity //implements OnClickListener
 
         // Create gesture detector listeners
     	createGestureDetector();
-        
+    }
+    
+    @Override
+    public void onStart()
+    {
+    	super.onStart();
+    	
     	// Connect to the APODDataProvider singleton and get the current APOD
         getData();
         
@@ -105,10 +111,10 @@ public class APODActivity extends Activity //implements OnClickListener
         changeTitle();
 
         // Initialize the Activity fields 
-    	fillWithApodData(); 
+    	fillWithApodData();   
     }
 
-    // Gt the APODDataProvider singleton stores in the APODApplication 
+    // Get the APODDataProvider singleton stores in the APODApplication 
     // Get the APODData of the current day.
 	private void getData() {
 		// Get a reference to the Application main class
@@ -301,9 +307,7 @@ public class APODActivity extends Activity //implements OnClickListener
     
     @Override
     public boolean onSearchRequested() {
-         Bundle appData = new Bundle();
-         appData.putBoolean("toto", true);
-         startSearch(null, false, appData, false);
+         startSearch(null, false, null, false);
          return true;
      }
 
@@ -315,7 +319,7 @@ public class APODActivity extends Activity //implements OnClickListener
 		// Load the APOD
 		date = (Calendar)apodData.getDate().clone();
 		date.add(Calendar.DATE, 1);
-		new APODAsyncLoader(date, this, progressDialog, 0).execute();
+		new APODAsyncLoader(date, this, (APODApplication)this.getApplication(), progressDialog, 0).execute();
 	}
 
 	// Load today's APOD
@@ -325,7 +329,7 @@ public class APODActivity extends Activity //implements OnClickListener
 
 		// Load the APOD
 		date = GregorianCalendar.getInstance();
-		new APODAsyncLoader(date, this, progressDialog, 0).execute();
+		new APODAsyncLoader(date, this, (APODApplication)this.getApplication(), progressDialog, 0).execute();
 	}
 
 	// Load the APOD of the date before the current date
@@ -336,7 +340,7 @@ public class APODActivity extends Activity //implements OnClickListener
 		// Load the APOD
 		date = (Calendar)apodData.getDate().clone();
 		date.add(Calendar.DATE, -1);
-		new APODAsyncLoader(date, this, progressDialog, 0).execute();
+		new APODAsyncLoader(date, this, (APODApplication)this.getApplication(), progressDialog, 0).execute();
 	}
 
     // Listener for the DatePickerDialog. This date picker is called when selecting @Set Date@ from the
@@ -350,7 +354,7 @@ public class APODActivity extends Activity //implements OnClickListener
 
 			Calendar date = GregorianCalendar.getInstance();
 			date.set(year, monthOfYear, dayOfMonth);
-        	new APODAsyncLoader(date, APODActivity.this, progressDialog, 0).execute();
+        	new APODAsyncLoader(date, APODActivity.this, (APODApplication)APODActivity.this.getApplication(), progressDialog, 0).execute();
 		}
     };
 
@@ -412,7 +416,7 @@ public class APODActivity extends Activity //implements OnClickListener
 
                 	Calendar date = (Calendar)apodData.getDate().clone();
                     date.add(Calendar.DATE, 1);
-                    new APODAsyncLoader(date, APODActivity.this, progressDialog, 0).execute();
+                    new APODAsyncLoader(date, APODActivity.this, (APODApplication)APODActivity.this.getApplication(), progressDialog, 0).execute();
 
                     // This is a valid fling
                     return true;
@@ -423,7 +427,7 @@ public class APODActivity extends Activity //implements OnClickListener
 
                     Calendar date = (Calendar)apodData.getDate().clone();
                     date.add(Calendar.DATE, -1);
-                    new APODAsyncLoader(date, APODActivity.this, progressDialog, 0).execute();
+                    new APODAsyncLoader(date, APODActivity.this, (APODApplication)APODActivity.this.getApplication(), progressDialog, 0).execute();
 
                     // This is a valid fling
                     return true;
@@ -437,5 +441,28 @@ public class APODActivity extends Activity //implements OnClickListener
             return false;
         }
     }
+
+	@Override
+	protected void onPause() 
+	{
+		super.onPause();
+	}
+
+	@Override
+	protected void onRestart() 
+	{
+		super.onRestart();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+	}
+
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+	}
 }
 

@@ -33,32 +33,30 @@ class APODAsyncLoader extends AsyncTask<Void, Void, Void>
 	public APODAsyncLoader(
 			Calendar date,
 			Activity activity, 
+			APODApplication app,
 			ProgressDialog progressDialog,
 			long milliseconds)
 	{
 		this.date = date;
 		this.activity = activity;
+		this.app = app;
 		this.progressDialog = progressDialog;
 		this.milliseconds = milliseconds;
-		
-		// Get a reference to the Application main class
-        app = (APODApplication)activity.getApplication();
 	}
 	
 	// Ctor
 		public APODAsyncLoader(
 				String filename,
 				Activity activity, 
+				APODApplication app,
 				ProgressDialog progressDialog,
 				long milliseconds)
 		{
 			this.filename = filename;
 			this.activity = activity;
+			this.app = app;
 			this.progressDialog = progressDialog;
 			this.milliseconds = milliseconds;
-			
-			// Get a reference to the Application main class
-	        app = (APODApplication)activity.getApplication();
 		}
 	
 	// This is where the asyn loading is made. This code runs in
@@ -99,10 +97,13 @@ class APODAsyncLoader extends AsyncTask<Void, Void, Void>
 		if(progressDialog != null)
 			progressDialog.dismiss();
 
-		// Start a new APODActivity for the new APODData loaded
-		activity.startActivity(new Intent(activity, APODActivity.class));
-		
-		// Terminate the current APODActivity
-        activity.finish();
+		if(activity != null)
+		{
+			// Start a new APODActivity for the new APODData loaded
+			activity.startActivity(new Intent(activity, APODActivity.class));
+			
+			// Terminate the current APODActivity
+	        activity.finish();
+		}
 	}
 }
