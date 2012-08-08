@@ -15,5 +15,6 @@
     <string name="search_hint">Search APOD Archive</string>
     <string name="search_results_for">Search results for: </string>
     <string name="search_unknown_query">Unknown Query</string>
+    <string name="searching">Searching ...</string>
 
 </resources>

@@ -3,21 +3,16 @@ package com.basbrun;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class APODSearchActivity extends Activity 
 {
-	private APODApplication app = null;
-	
-	private TextView searchBox = null;
 	private ListView listViewSearchResults = null;
 
 	/** Called when the activity is first created. */
@@ -27,7 +22,6 @@ public class APODSearchActivity extends Activity
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.apod_search);
 	    
-	    searchBox = (TextView)this.findViewById(R.id.textViewSearchQuery);
 	    listViewSearchResults = (ListView)findViewById(R.id.listViewSearchResult);
 	    
 	    listViewSearchResults.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -45,17 +39,17 @@ public class APODSearchActivity extends Activity
 	    Intent intent = getIntent();
 	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) 
 	    {
-	      String query = intent.getStringExtra(SearchManager.QUERY);
-	      searchBox.setText(" " + query);
-	      
-	      // Do search here ...
-	      app = (APODApplication)getApplication();
-	      List<APODSearchItem> results = app.getDataProvider().searchAPOD(query);
-	      
-	      // Display search results here ...
-	      APODSearchItemAdapter adapter = new APODSearchItemAdapter(this, results);
-	      listViewSearchResults.setAdapter(adapter);
+	      String query = intent.getStringExtra(SearchManager.QUERY);	      
+	      //app.startProgressDialog(this);
+	      new APODAsyncSearch(query, this, (APODApplication)this.getApplication()).execute();
 	    }
+	}
+	
+	public void displayResults(List<APODSearchItem> results)
+	{
+		// Display search results here ...
+		APODSearchItemAdapter adapter = new APODSearchItemAdapter(this, results);
+		listViewSearchResults.setAdapter(adapter);
 	}
 	
 	protected boolean onLongListItemClick(View v, int pos, long id) 
@@ -69,18 +63,6 @@ public class APODSearchActivity extends Activity
 	public void onListItemClick(ListView l, View v, int position, long id) 
 	{
 		APODSearchItem item = (APODSearchItem)listViewSearchResults.getItemAtPosition(position);
-		//ProgressDialog progressDialog = ProgressDialog.show(this, this.getResources().getString(R.string.loading), this.getResources().getString(R.string.loading_your));
-		try
-		{
-			APODApplication app = (APODApplication)getApplication();
-			app.getDataProvider().getAPODByFilename(item.getPagePath());
-		}
-		finally
-		{
-//			if(progressDialog != null )
-//				progressDialog.dismiss();
-		}
-		
-    	finish();
+		new APODAsyncLoader(item.getPagePath(), this, (APODApplication)this.getApplication(), 0).execute();
 	}
 }

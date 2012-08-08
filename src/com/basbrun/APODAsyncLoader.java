@@ -1,5 +1,6 @@
 package com.basbrun;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import android.app.Activity;
@@ -23,24 +24,21 @@ class APODAsyncLoader extends AsyncTask<Void, Void, Void>
 	// Reference to the APODApplication to get access to the APODDataProvider
 	private APODApplication app = null;
 	
-	// The ProgressDialog created by the calling Activity
-	private ProgressDialog progressDialog;
-	
 	// Minimum time to wait to load the picture
 	private long milliseconds = 0;
+	
+	ProgressDialog progressDialog;
 		
 	// Ctor
 	public APODAsyncLoader(
 			Calendar date,
 			Activity activity, 
 			APODApplication app,
-			ProgressDialog progressDialog,
 			long milliseconds)
 	{
 		this.date = date;
 		this.activity = activity;
 		this.app = app;
-		this.progressDialog = progressDialog;
 		this.milliseconds = milliseconds;
 	}
 	
@@ -49,13 +47,11 @@ class APODAsyncLoader extends AsyncTask<Void, Void, Void>
 				String filename,
 				Activity activity, 
 				APODApplication app,
-				ProgressDialog progressDialog,
 				long milliseconds)
 		{
 			this.filename = filename;
 			this.activity = activity;
 			this.app = app;
-			this.progressDialog = progressDialog;
 			this.milliseconds = milliseconds;
 		}
 	
@@ -93,17 +89,66 @@ class APODAsyncLoader extends AsyncTask<Void, Void, Void>
 	@Override
 	protected void onPostExecute(Void result)
 	{
-		// Turn off the spinner if any
-		if(progressDialog != null)
-			progressDialog.dismiss();
-
-		if(activity != null)
+		if(progressDialog != null && progressDialog.isShowing())
 		{
-			// Start a new APODActivity for the new APODData loaded
-			activity.startActivity(new Intent(activity, APODActivity.class));
-			
-			// Terminate the current APODActivity
-	        activity.finish();
+			try
+			{
+				progressDialog.dismiss();
+			}
+			catch(Exception ex)
+			{
+			}
 		}
+
+		if(activity != null )
+		{
+			if(activity instanceof APODActivity)
+			{
+				((APODActivity)activity).RefreshContent();
+			}
+			else if(activity instanceof APODSplashScreenActivity)
+			{
+				// Start a new APODActivity for the new APODData loaded
+				activity.startActivity(new Intent(activity, APODActivity.class));
+				
+				// Terminate the current APODActivity
+		        activity.finish();
+			}
+			else
+			{
+				// Terminate the calling Activity
+		        activity.finish();
+			}
+		}
+	}
+
+	@Override
+	protected void onPreExecute() 
+	{
+		super.onPreExecute();
+		
+		String dateDisplay;
+		if(date != null)
+		{
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+			dateDisplay = sdf.format(date.getTime());
+		}
+		else
+		{
+			// Format the date to display from the filename
+			int year = Integer.parseInt(filename.substring(2, 4)) + 2000;
+			if(year > 2094)
+				year -= 100;
+			
+			int month = Integer.parseInt(filename.substring(4, 6));			
+			int day = Integer.parseInt(filename.substring(6, 8));
+			
+			dateDisplay = year + "/" + month + "/" + day;
+		}
+		
+		this.progressDialog = ProgressDialog.show(
+				activity, 
+				activity.getResources().getString(R.string.loading), 
+				"Loading "+ dateDisplay);
 	}
 }
