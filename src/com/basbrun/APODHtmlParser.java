@@ -70,6 +70,9 @@ public class APODHtmlParser
 	{
 		List<APODSearchItem> list = new ArrayList<APODSearchItem>();
 		
+		if(page.indexOf("Nothing found") > -1)
+			return list;
+		
 		String pageUp = page.toUpperCase();
 		int index = pageUp.indexOf("<P>");
 		while(index > -1)

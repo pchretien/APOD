@@ -3,12 +3,15 @@ package com.basbrun;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class APODSearchActivity extends Activity 
@@ -47,6 +50,19 @@ public class APODSearchActivity extends Activity
 	
 	public void displayResults(List<APODSearchItem> results)
 	{
+		if(results.size() == 0)
+		{
+			TextView aboutMsg = new TextView(this);
+        	aboutMsg.setText("Nothing Found");        	
+    		aboutMsg.setGravity(Gravity.CENTER_HORIZONTAL);
+    		
+        	new AlertDialog.Builder(this)
+    		.setView(aboutMsg)
+    		.setPositiveButton("OK", null)
+    		.show();
+        	
+        	return;
+		}
 		// Display search results here ...
 		APODSearchItemAdapter adapter = new APODSearchItemAdapter(this, results);
 		listViewSearchResults.setAdapter(adapter);
