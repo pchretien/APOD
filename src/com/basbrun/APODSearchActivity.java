@@ -2,19 +2,20 @@ package com.basbrun;
 
 import java.util.List;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class APODSearchActivity extends Activity 
+public class APODSearchActivity extends APODBaseActivity 
 {
 	String query;
 	private ListView listViewSearchResults = null;
@@ -45,6 +46,21 @@ public class APODSearchActivity extends Activity
 	    
 	    changeTitle();
 	}
+	
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) 
+    {
+    	super.onCreateOptionsMenu(menu);
+    	
+    	for(int i=0; i<menu.size(); i++)
+    	{
+    		MenuItem menuItem = menu.getItem(i);
+    		if(menuItem.getItemId() == R.id.menu_set_date)
+    			menuItem.setVisible(false);
+    	}
+    	
+    	return true;
+    } 
 	
 	@Override
 	protected void onNewIntent(Intent intent) 

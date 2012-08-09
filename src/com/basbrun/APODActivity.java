@@ -29,7 +29,7 @@ package com.basbrun;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import android.app.Activity;
+
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
@@ -40,8 +40,6 @@ import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -57,16 +55,15 @@ import com.basbrun.APODData.ApodContentType;
 
 // APODActivity is the main application activity. The APOD are displayed trough
 // this activity. The menu and all gestures are bound to this activity.
-public class APODActivity extends Activity //implements OnClickListener
+public class APODActivity extends APODBaseActivity //implements OnClickListener
 {
-
 	// Reference to the APODApplication to get access to the APODDataProvider
 	private APODApplication app = null;
 	
 	// A reference to the current APODData downloaded from the website
 	// This data is obtained trough the data provider
 	private APODData apodData = null;
-
+	
 	// Constants and listeners for gesture detection
 	private static final int SWIPE_MIN_DISTANCE = 60;
     private static final int SWIPE_MAX_OFF_PATH = 350;
@@ -117,7 +114,8 @@ public class APODActivity extends Activity //implements OnClickListener
 
     // Get the APODDataProvider singleton stores in the APODApplication 
     // Get the APODData of the current day.
-	private void getData() {
+	private void getData() 
+	{
 		// Get a reference to the Application main class
         // We derived the main application class to store the 
         // APODDataProvider singleton
@@ -247,24 +245,12 @@ public class APODActivity extends Activity //implements OnClickListener
     	webView = (WebView) findViewById(R.id.webViewDescription);
 	}
 
-	// This method is called when the Activity is ready to create the menu.
-	// We use the inflater to load an XML menu definition 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) 
-    {
-    	// Pump the xml menu definition to the Activity menu
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.apod_menu, menu);
-        return true;
-    } 
-   
     // Main menu selection callbacks. When a menu item is clicked, 
     // this function is called with the id of the menu item selected.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) 
     {
-    	TextView aboutMsg;
-        switch (item.getItemId()) 
+    	switch (item.getItemId()) 
         {
 	        // Load the APOD for a specific date using the DatePickerDialog
         	case R.id.menu_set_date:
@@ -280,43 +266,12 @@ public class APODActivity extends Activity //implements OnClickListener
         		datePicker.show();
                 return true;
 
-            // Start the APODPreferencesActivity
-        	case R.id.menu_settings:
-        		startActivity(new Intent(APODActivity.this, APODPreferences.class));
-                return true;
-            
-            // Display credits ... If you are reading this, your name could appear here
-            // if you get involved in the project ;)
-        	case R.id.menu_about:
-        		
-        		aboutMsg = new TextView(this);
-        		aboutMsg.setText(" Copyright Philippe Chretien (2012) \nwww.basbrun.com");
-        		aboutMsg.setGravity(Gravity.CENTER_HORIZONTAL);
-
-        		new AlertDialog.Builder(this)
-        		.setView(aboutMsg)
-        		.setPositiveButton("OK", null)
-        		.show();
-
-                return true;
-                
-        	case R.id.menu_search:
-        		
-        		this.onSearchRequested();
-                return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
     
-    @Override
-    public boolean onSearchRequested() 
-    {
-    	String initialQuery = app.getDataProvider().getSearchQuery();
-        startSearch(initialQuery, initialQuery != null, null, false);
-        return true;
-     }
+    
 
     // Load the APOD of the date after the current date
 	private void loadNext() 

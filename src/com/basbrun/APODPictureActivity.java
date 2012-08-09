@@ -27,14 +27,15 @@
 
 package com.basbrun;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.webkit.WebView;
 
 // The APODPictureActivity allows to view the picture in full size.
 // The APOD FULL picture is not loaded here in order to avoid out of
 // memory problems for low end devices.
-public class APODPictureActivity extends Activity
+public class APODPictureActivity extends APODBaseActivity
 {
 	private APODApplication app = null;
 	private APODData apodData = null;
@@ -65,6 +66,22 @@ public class APODPictureActivity extends Activity
         webView.getSettings().setBuiltInZoomControls(true);
         webView.loadDataWithBaseURL("", htmlPage, "text/html", "utf-8", "");
 	}
+	
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) 
+    {
+    	super.onCreateOptionsMenu(menu);
+    	
+    	for(int i=0; i<menu.size(); i++)
+    	{
+    		MenuItem menuItem = menu.getItem(i);
+    		if(	menuItem.getItemId() == R.id.menu_set_date ||
+    			menuItem.getItemId() == R.id.menu_search)
+    			menuItem.setVisible(false);
+    	}
+    	
+    	return true;
+    } 
 
 	// Get the current APOD
 	private void getData() 
