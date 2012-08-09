@@ -41,14 +41,26 @@ public class APODSearchActivity extends Activity
         });
 	    
 	    Intent intent = getIntent();
-	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) 
+	    handleIntent(intent);
+	    
+	    changeTitle();
+	}
+	
+	@Override
+	protected void onNewIntent(Intent intent) 
+	{
+	    setIntent(intent);
+	    handleIntent(intent);
+	}
+	
+	private void handleIntent(Intent intent) 
+	{
+		if (Intent.ACTION_SEARCH.equals(intent.getAction())) 
 	    {
 	      query = intent.getStringExtra(SearchManager.QUERY);	      
 	      //app.startProgressDialog(this);
 	      new APODAsyncSearch(query, this, (APODApplication)this.getApplication()).execute();
 	    }
-	    
-	    changeTitle();
 	}
 	
 	private void changeTitle() 
