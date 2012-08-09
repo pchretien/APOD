@@ -91,21 +91,26 @@ public class APODHtmlParser
 			int endTitleIndex = itemContent.substring(titleIndex).indexOf("<");
 			String title = itemContent.substring(titleIndex+1, titleIndex+endTitleIndex).trim();
 			
-			// Get the date
-			int dateIndex = title.indexOf(":")+1;
-			int endDateIndex = title.indexOf("-");
-			String date = title.substring(dateIndex, endDateIndex).trim();
-			
-			// Remove the date from the title
-			title = title.substring(endDateIndex+1).trim();
-					
-			// Get the page path
-			int pageIndex = itemContent.indexOf("apod.nasa.gov/apod/")+19;
-			int endPageIndex = itemContent.indexOf(">", pageIndex);
-			String pagePath = itemContent.substring(pageIndex, endPageIndex);
-			
-			// Add to the list
-			list.add(new APODSearchItem(title, date, pagePath));
+			// This is a patch to work around an encoding problem with the
+			// APOD "Kepler 22b: An Almost Earth Orbiting an Almost Sun"
+			if(title.indexOf("-") != -1)
+			{
+				// Get the date
+				int dateIndex = title.indexOf(":")+1;
+				int endDateIndex = title.indexOf("-");
+				String date = title.substring(dateIndex, endDateIndex).trim();
+				
+				// Remove the date from the title
+				title = title.substring(endDateIndex+1).trim();
+						
+				// Get the page path
+				int pageIndex = itemContent.indexOf("apod.nasa.gov/apod/")+19;
+				int endPageIndex = itemContent.indexOf(">", pageIndex);
+				String pagePath = itemContent.substring(pageIndex, endPageIndex);
+				
+				// Add to the list
+				list.add(new APODSearchItem(title, date, pagePath));
+			}
 			
 			// Get the next item in the page ...
 			index += pageUp.substring(index).indexOf("<P>", 1);

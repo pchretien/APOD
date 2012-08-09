@@ -88,9 +88,12 @@ public class WebDataConnector
 
         	String line = "";
         	pageSource = "";
+        	StringBuffer stringBuffer = new StringBuffer();
 			while ((line = br.readLine()) != null)
-				pageSource += line;
+				stringBuffer.append(line);
 
+			pageSource = stringBuffer.toString();
+			
 			br.close();
 			isr.close();
 			is.close();
