@@ -311,9 +311,11 @@ public class APODActivity extends Activity //implements OnClickListener
     }
     
     @Override
-    public boolean onSearchRequested() {
-         startSearch(null, false, null, false);
-         return true;
+    public boolean onSearchRequested() 
+    {
+    	String initialQuery = app.getDataProvider().getSearchQuery();
+        startSearch(initialQuery, initialQuery != null, null, false);
+        return true;
      }
 
     // Load the APOD of the date after the current date

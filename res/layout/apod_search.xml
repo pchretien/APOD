@@ -11,6 +11,6 @@
     android:layout_weight="0.54"
     android:stackFromBottom="false"
     android:transcriptMode="normal"
-    android:dividerHeight="1dp" />
+    android:dividerHeight="2dp" />
     
 </LinearLayout>
