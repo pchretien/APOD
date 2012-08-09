@@ -38,9 +38,21 @@ class APODAsyncSearch extends AsyncTask<Void, Void, Void>
 	@Override
 	protected Void doInBackground(Void ... params)
 	{
+		// Check if the last search is the same ...
+		String lastQuery = app.getDataProvider().getSearchQuery();
+		
+		if(lastQuery != null && lastQuery.equals(query))
+		{
+			results = app.getDataProvider().getSearchResults();
+			if(results != null)
+				return null;
+		}
+		
 		// Do search here ...
 	    results = app.getDataProvider().searchAPOD(query);
-		
+	    app.getDataProvider().setSearchQuery(query);
+	    app.getDataProvider().setSearchResults(results);
+	    
 		return null;
 	}
 

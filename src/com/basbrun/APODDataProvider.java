@@ -39,9 +39,12 @@ import android.graphics.Bitmap;
 // as a singleton.
 public class APODDataProvider
 {
-	private APODData apodData = null;
+	private APODData apodData = null;	
 	private SharedPreferences preferences = null;
 	private WebDataConnector dataConnector= null;
+	
+	private String searchQuery;
+	private List<APODSearchItem> searchResults;
 	
 	public APODDataProvider(SharedPreferences preferences)
 	{
@@ -254,5 +257,21 @@ public class APODDataProvider
 		List<APODSearchItem> list = APODHtmlParser.parseSearchResults(page);
 		
 		return list;
+	}
+
+	public List<APODSearchItem> getSearchResults() {
+		return searchResults;
+	}
+
+	public void setSearchResults(List<APODSearchItem> searchResults) {
+		this.searchResults = searchResults;
+	}
+
+	public String getSearchQuery() {
+		return searchQuery;
+	}
+
+	public void setSearchQuery(String searchQuery) {
+		this.searchQuery = searchQuery;
 	}
 }
