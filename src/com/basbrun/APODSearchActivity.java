@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 public class APODSearchActivity extends Activity 
 {
+	String query;
 	private ListView listViewSearchResults = null;
 
 	/** Called when the activity is first created. */
@@ -42,14 +43,38 @@ public class APODSearchActivity extends Activity
 	    Intent intent = getIntent();
 	    if (Intent.ACTION_SEARCH.equals(intent.getAction())) 
 	    {
-	      String query = intent.getStringExtra(SearchManager.QUERY);	      
+	      query = intent.getStringExtra(SearchManager.QUERY);	      
 	      //app.startProgressDialog(this);
 	      new APODAsyncSearch(query, this, (APODApplication)this.getApplication()).execute();
 	    }
+	    
+	    changeTitle();
+	}
+	
+	private void changeTitle() 
+	{		
+        String title = String.format(
+        		"APOD: \"%s\"", 
+        		query);
+        setTitle(title);
 	}
 	
 	public void displayResults(List<APODSearchItem> results)
 	{
+		if(results == null)
+		{
+			TextView aboutMsg = new TextView(this);
+        	aboutMsg.setText(R.string.connection_error);        	
+    		aboutMsg.setGravity(Gravity.CENTER_HORIZONTAL);
+    		
+        	new AlertDialog.Builder(this)
+    		.setView(aboutMsg)
+    		.setPositiveButton("OK", null)
+    		.show();
+        	
+        	return;
+		}
+		
 		if(results.size() == 0)
 		{
 			TextView aboutMsg = new TextView(this);

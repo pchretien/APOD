@@ -117,7 +117,7 @@ public class APODDataProvider
 		if(page == null)
 		{
 			apodContentType = APODData.ApodContentType.ERROR;
-			error = "Connection error! Make sure you are connected to the internet!";
+			error = APODApplication.getAppContext().getString(R.string.connection_error);
 		}
 		else
 		{
@@ -254,8 +254,12 @@ public class APODDataProvider
 	{
 		WebDataConnector webDataConnector = new WebDataConnector("http://apod.nasa.gov/cgi-bin/apod/", null);
 		String page = webDataConnector.GetHtml(false, new APODSearchFormatter(query));
-		List<APODSearchItem> list = APODHtmlParser.parseSearchResults(page);
 		
+		// Most probably a connection error ...
+		if(page == null)
+			return null;
+		
+		List<APODSearchItem> list = APODHtmlParser.parseSearchResults(page);		
 		return list;
 	}
 

@@ -29,7 +29,6 @@ package com.basbrun;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -40,6 +39,7 @@ import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -179,7 +179,7 @@ public class APODActivity extends Activity //implements OnClickListener
 	private void changeTitle() 
 	{		
         String title = String.format(
-        		"APOD (%d/%02d/%02d)", 
+        		"APOD: %d/%02d/%02d", 
         		apodData.getDate().get(Calendar.YEAR), 
         		apodData.getDate().get(Calendar.MONTH)+1, 
         		apodData.getDate().get(Calendar.DATE));
@@ -434,6 +434,35 @@ public class APODActivity extends Activity //implements OnClickListener
             return false;
         }
     }
+    
+    @Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    //Handle the back button
+	    if(keyCode == KeyEvent.KEYCODE_BACK) {
+	        //Ask the user if they want to quit
+	        new AlertDialog.Builder(this)
+	        .setIcon(android.R.drawable.ic_dialog_alert)
+	        .setTitle(R.string.quit)
+	        .setMessage(R.string.really_quit)
+	        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+
+	            public void onClick(DialogInterface dialog, int which) {
+
+	                //Stop the activity
+	                APODActivity.this.finish();    
+	            }
+
+	        })
+	        .setNegativeButton(R.string.no, null)
+	        .show();
+
+	        return true;
+	    }
+	    else 
+	    {
+	        return super.onKeyDown(keyCode, event);
+	    }
+	}	
 
 	@Override
 	protected void onPause() 

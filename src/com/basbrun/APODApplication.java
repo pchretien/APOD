@@ -1,4 +1,4 @@
-//// APOD ////
+	//// APOD ////
 //
 // This project is an Android client to visualize the Astronomy Picture Of The
 // Day (APOD) published by NASA at http://apod.nasa.gov/apod/. This project is
@@ -28,6 +28,7 @@
 package com.basbrun;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
@@ -39,6 +40,8 @@ import android.preference.PreferenceManager;
 // application file. android:name="com.basbrun.APODApplication"
 public class APODApplication extends Application
 {
+	private static Context context;
+	
 	// APODDataProvider singleton
 	private static APODDataProvider dataProvider = null;
 
@@ -47,6 +50,8 @@ public class APODApplication extends Application
 	{
 		super.onCreate();
 		
+		APODApplication.context = getApplicationContext();
+		
 		// Get the preferences of the user to construct the APODDataProvider.
 		// The preferences are used to determine if the caching is enabled.
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -54,7 +59,13 @@ public class APODApplication extends Application
 	}
 
 	// Return the APODDataProvider singleton
-	public APODDataProvider getDataProvider() {
+	public APODDataProvider getDataProvider() 
+	{
 		return dataProvider;
 	}
+	
+	public static Context getAppContext() 
+	{
+        return APODApplication.context;
+    }
 }
