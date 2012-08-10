@@ -1,3 +1,10 @@
+v0.4 (2012-08-09)
+- Bug Fix: Some spaces in the text are missing
+- You can now search the APOD archives
+- On screen Previous, Today and Next buttons
+- Added a confirmation message uppon exit
+- All activities now have a specific menu
+
 v0.3 (2012-07-17)
 - Bug Fix: Text View still apparent on top of APODActivity
 - Bug Fix: Crash with no Internet connection and no cached files
