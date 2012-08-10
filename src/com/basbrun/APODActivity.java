@@ -34,6 +34,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.GestureDetector;
@@ -266,6 +267,23 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
         		datePicker.show();
                 return true;
 
+        	case R.id.menu_wallpaper:
+        		if(apodData != null)
+        		{
+        			try
+        			{
+        				Bitmap bmp = apodData.getBitmap();
+        				if(bmp != null)
+        					getApplicationContext().setWallpaper(bmp);
+        			}
+        			catch(Exception ex)
+        			{        	
+        				System.out.println(ex);
+        			}
+        		}
+        		
+        		return true;
+                
             default:
                 return super.onOptionsItemSelected(item);
         }

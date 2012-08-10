@@ -29,6 +29,8 @@ public final class R {
         public static final int search5=0x7f02000f;
         public static final int settings=0x7f020010;
         public static final int settings5=0x7f020011;
+        public static final int wallpaper=0x7f020012;
+        public static final int wallpaper5=0x7f020013;
     }
     public static final class id {
         public static final int button_next=0x7f070002;
@@ -37,10 +39,11 @@ public final class R {
         public static final int creditsText=0x7f070008;
         public static final int imageViewAPOD=0x7f070003;
         public static final int listViewSearchResult=0x7f070006;
-        public static final int menu_about=0x7f07000d;
-        public static final int menu_search=0x7f07000e;
+        public static final int menu_about=0x7f07000f;
+        public static final int menu_search=0x7f07000c;
         public static final int menu_set_date=0x7f07000b;
-        public static final int menu_settings=0x7f07000c;
+        public static final int menu_settings=0x7f07000d;
+        public static final int menu_wallpaper=0x7f07000e;
         public static final int searchItemDate=0x7f07000a;
         public static final int serchItemTitle=0x7f070009;
         public static final int splashScreenImage=0x7f070007;
