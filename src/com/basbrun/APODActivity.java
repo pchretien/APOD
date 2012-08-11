@@ -32,6 +32,7 @@ import java.util.GregorianCalendar;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.WallpaperManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -268,13 +269,16 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
                 return true;
 
         	case R.id.menu_wallpaper:
+        		
         		if(apodData != null)
         		{
         			try
         			{
         				Bitmap bmp = apodData.getBitmap();
         				if(bmp != null)
-        					getApplicationContext().setWallpaper(bmp);
+        				{
+        					setWallpaperWithAPOD(bmp);
+        				}
         			}
         			catch(Exception ex)
         			{        	
@@ -283,13 +287,31 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
         		}
         		
         		return true;
-                
+        		
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
     
-    
+    @SuppressWarnings("unused")
+	private void setWallpaperWithAPOD(Bitmap bmp)
+    {
+    	try
+    	{
+	    	if(APODUtils.apiLevel <= 3)
+			{
+				getApplicationContext().setWallpaper(bmp);
+			}
+			else
+			{
+				WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+				wallpaperManager.setBitmap(bmp);
+			}
+    	}
+    	catch(Exception ex)
+    	{
+    	}
+    }
 
     // Load the APOD of the date after the current date
 	private void loadNext() 
