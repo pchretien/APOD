@@ -48,10 +48,12 @@ public class APODPictureActivity extends APODBaseActivity
 
 	    // Get the current APOD
 	    getData();
+	    
+	    int version = Integer.parseInt(android.os.Build.VERSION.SDK);
 
 	    // Build the full path of the image to display
         String src = app.getDataProvider().getBitmapPathFromCache(apodData.getDate());
-        if(src != null)
+        if(src != null && version < 16)
         	src = "file:/" + src;
         else
         	src = apodData.getSrc();

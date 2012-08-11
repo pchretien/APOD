@@ -32,7 +32,6 @@ import java.util.GregorianCalendar;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.WallpaperManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -304,7 +303,7 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
 			}
 			else
 			{
-				WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+				android.app.WallpaperManager wallpaperManager = android.app.WallpaperManager.getInstance(this);
 				wallpaperManager.setBitmap(bmp);
 			}
     	}
