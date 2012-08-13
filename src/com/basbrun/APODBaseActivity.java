@@ -29,6 +29,38 @@ public class APODBaseActivity extends Activity
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.apod_menu, menu);
         
+        // Change menu icons for API levels 
+        if(APODUtils.getRunningApiLevel() < 8)
+        {
+        	// Android 2.1 and older ...
+        	for(int i=0; i<menu.size(); i++)
+        	{
+        		MenuItem item = menu.getItem(i);
+        		switch(item.getItemId())
+        		{
+	        		case R.id.menu_about:
+	        			item.setIcon(R.drawable.about);
+	        			break;
+	        		case R.id.menu_random:
+	        			item.setIcon(R.drawable.dice);
+	        			break;
+	        		case R.id.menu_search:
+	        			item.setIcon(R.drawable.search);
+	        			break;
+	        		case R.id.menu_set_date:
+	        			item.setIcon(R.drawable.calendar);
+	        			break;
+	        		case R.id.menu_settings:
+	        			item.setIcon(R.drawable.settings);
+	        			break;
+	        		case R.id.menu_wallpaper:
+	        			item.setIcon(R.drawable.wallpaper);
+	        			break;
+        		}
+        		
+        	}
+        }
+        
         return true;
     } 
     
