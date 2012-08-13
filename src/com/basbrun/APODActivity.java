@@ -35,7 +35,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.GestureDetector;
@@ -59,17 +58,10 @@ import com.basbrun.APODData.ApodContentType;
 // this activity. The menu and all gestures are bound to this activity.
 public class APODActivity extends APODBaseActivity //implements OnClickListener
 {
-	// Reference to the APODApplication to get access to the APODDataProvider
-	private APODApplication app = null;
-	
-	// A reference to the current APODData downloaded from the website
-	// This data is obtained trough the data provider
-	private APODData apodData = null;
-	
 	// Constants and listeners for gesture detection
-	private static final int SWIPE_MIN_DISTANCE = 60;
-    private static final int SWIPE_MAX_OFF_PATH = 350;
-    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+	private static final int SWIPE_MIN_DISTANCE = 30;
+    private static final int SWIPE_MAX_OFF_PATH = 500;
+    private static final int SWIPE_THRESHOLD_VELOCITY = 100;
     private GestureDetector gestureDetector;
     private View.OnTouchListener gestureListener;
     
@@ -112,6 +104,12 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
 
         // Initialize the Activity fields 
     	fillWithApodData();  
+
+    	ImageButton nextButton = (ImageButton)this.findViewById(R.id.button_next);
+    	nextButton.setEnabled(true);
+    	
+    	if(app.getDataProvider().isTodayAPOD())
+    		nextButton.setEnabled(false);
     }
 
     // Get the APODDataProvider singleton stores in the APODApplication 
@@ -267,31 +265,10 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
         		datePicker.setOnDismissListener(mDismissListener);
         		datePicker.show();
                 return true;
-
-        	case R.id.menu_wallpaper:
-        		
-        		if(apodData != null)
-        		{
-        			try
-        			{
-        				Bitmap bmp = apodData.getBitmap();
-        				if(bmp != null)
-        				{
-        					setWallpaperWithAPOD(bmp);
-        				}
-        			}
-        			catch(Exception ex)
-        			{        	
-        				System.out.println(ex);
-        			}
-        		}
-        		
-        		return true;
         		
         	case R.id.menu_random:
         		Calendar newCalendar = Calendar.getInstance();
-        		for(int i=0; i<1000; i++)
-        		{
+        		
         		Calendar today = Calendar.getInstance();
         		int currentYear = today.get(Calendar.YEAR);
         		int currentMonth = today.get(Calendar.MONTH);
@@ -312,7 +289,6 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
         			maxMonth = currentMonth;
         		int newMonth = rnd.nextInt(maxMonth-minMonth+1)+minMonth;
         		
-        		//Calendar newCalendar = Calendar.getInstance();
         		newCalendar.set(newYear, newMonth, 1);
         		
         		int minDay = 1;
@@ -324,7 +300,7 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
         		int newDay = rnd.nextInt(maxDay-minDay+1)+minDay;
         		
         		newCalendar.set(newYear, newMonth, newDay);
-        		}
+        		
         		new APODAsyncLoader(newCalendar, this, (APODApplication)this.getApplication(), 0).execute();
         				
         		return true;
@@ -332,26 +308,6 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-    
-    @SuppressWarnings("unused")
-	private void setWallpaperWithAPOD(Bitmap bmp)
-    {
-    	try
-    	{
-	    	if(APODUtils.apiLevel <= 3)
-			{
-				getApplicationContext().setWallpaper(bmp);
-			}
-			else
-			{
-				android.app.WallpaperManager wallpaperManager = android.app.WallpaperManager.getInstance(this);
-				wallpaperManager.setBitmap(bmp);
-			}
-    	}
-    	catch(Exception ex)
-    	{
-    	}
     }
 
     // Load the APOD of the date after the current date
@@ -445,6 +401,9 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
                 // right to left swipe
                 if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY)
                 {
+                	if(app.getDataProvider().isTodayAPOD())
+                		return true;
+                	
                 	Calendar date = (Calendar)apodData.getDate().clone();
                     date.add(Calendar.DATE, 1);
                     new APODAsyncLoader(date, APODActivity.this, (APODApplication)APODActivity.this.getApplication(), 0).execute();

@@ -28,6 +28,8 @@ class APODAsyncLoader extends AsyncTask<Void, Void, Void>
 	private long milliseconds = 0;
 	
 	ProgressDialog progressDialog;
+	
+	private Calendar timer;
 		
 	// Ctor
 	public APODAsyncLoader(
@@ -62,7 +64,7 @@ class APODAsyncLoader extends AsyncTask<Void, Void, Void>
 	protected Void doInBackground(Void ... params)
 	{
 		// Start a timer for the splash screen
-		Calendar timer = Calendar.getInstance();
+		timer = Calendar.getInstance();
 		
 		// Load the APOD for the date received in parameter
 		if(date != null)
@@ -72,15 +74,7 @@ class APODAsyncLoader extends AsyncTask<Void, Void, Void>
 		else
 			app.getDataProvider().getAPODByFilename(""); // Should load the default page
 		
-		// Wait until the splash screen delay expires
-		try
-		{
-			while(Calendar.getInstance().getTimeInMillis() - timer.getTimeInMillis() < milliseconds)
-				Thread.sleep(100);
-		}
-		catch(Exception ex)
-		{			
-		}
+		
 		
 		return null;
 	}
@@ -98,6 +92,16 @@ class APODAsyncLoader extends AsyncTask<Void, Void, Void>
 			catch(Exception ex)
 			{
 			}
+		}
+		
+		// Wait until the splash screen delay expires
+		try
+		{
+			while(Calendar.getInstance().getTimeInMillis() - timer.getTimeInMillis() < milliseconds)
+				Thread.sleep(100);
+		}
+		catch(Exception ex)
+		{			
 		}
 
 		if(activity != null )

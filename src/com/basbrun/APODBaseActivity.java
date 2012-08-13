@@ -11,6 +11,13 @@ import android.widget.TextView;
 
 public class APODBaseActivity extends Activity
 {
+	// Reference to the APODApplication to get access to the APODDataProvider
+	protected APODApplication app = null;
+	
+	// A reference to the current APODData downloaded from the website
+	// This data is obtained trough the data provider
+	protected APODData apodData = null;
+	
 	// This method is called when the Activity is ready to create the menu.
 	// We use the inflater to load an XML menu definition 
     @Override
@@ -21,6 +28,7 @@ public class APODBaseActivity extends Activity
     	// Pump the xml menu definition to the Activity menu
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.apod_menu, menu);
+        
         return true;
     } 
     
@@ -56,6 +64,13 @@ public class APODBaseActivity extends Activity
         		
         		this.onSearchRequested();
                 return true;
+                
+        	case R.id.menu_wallpaper:
+        		
+        		app = (APODApplication)getApplication();
+        		new APODAsyncWallpaper(this, app).execute();
+        		
+        		return true;
 
             default:
                 return super.onOptionsItemSelected(item);

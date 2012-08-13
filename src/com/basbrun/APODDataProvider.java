@@ -278,4 +278,21 @@ public class APODDataProvider
 	public void setSearchQuery(String searchQuery) {
 		this.searchQuery = searchQuery;
 	}
+	
+	public boolean isTodayAPOD()
+	{
+		Calendar today = Calendar.getInstance();
+		int currentYear = today.get(Calendar.YEAR);
+		int currentMonth = today.get(Calendar.MONTH);
+		int currentDay = today.get(Calendar.DATE);
+		
+		int apodYear = apodData.getDate().get(Calendar.YEAR);
+		int apodMonth = apodData.getDate().get(Calendar.MONTH);
+		int apodDay = apodData.getDate().get(Calendar.DATE);
+		
+		if(currentYear == apodYear && currentMonth == apodMonth && currentDay == apodDay)
+			return true;
+		
+		return false;		
+	}
 }

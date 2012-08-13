@@ -79,7 +79,6 @@ public class APODPictureActivity extends APODBaseActivity
     		MenuItem menuItem = menu.getItem(i);
     		if(	menuItem.getItemId() == R.id.menu_set_date ||
     			menuItem.getItemId() == R.id.menu_search ||
-    			menuItem.getItemId() == R.id.menu_wallpaper ||
     			menuItem.getItemId() == R.id.menu_random)
     			menuItem.setVisible(false);
     	}
