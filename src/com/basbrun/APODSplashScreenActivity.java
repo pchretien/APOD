@@ -14,7 +14,7 @@ public class APODSplashScreenActivity extends Activity {
 		setContentView(R.layout.apod_splash_screen);
 		
 		Calendar calendar = Calendar.getInstance();
-		new APODAsyncLoader(calendar, this, (APODApplication)this.getApplication(), 1000).execute();
+		new APODAsyncLoader(calendar, this, (APODApplication)this.getApplication(), 3000).execute();
 	}
 
 }
