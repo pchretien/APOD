@@ -55,7 +55,9 @@ public class APODSearchActivity extends APODBaseActivity
     	for(int i=0; i<menu.size(); i++)
     	{
     		MenuItem menuItem = menu.getItem(i);
-    		if(menuItem.getItemId() == R.id.menu_set_date)
+    		if(	menuItem.getItemId() == R.id.menu_set_date ||
+    			menuItem.getItemId() == R.id.menu_wallpaper ||
+    			menuItem.getItemId() == R.id.menu_random)
     			menuItem.setVisible(false);
     	}
     	

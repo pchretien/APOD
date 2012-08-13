@@ -29,6 +29,7 @@ package com.basbrun;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Random;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -285,6 +286,47 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
         			}
         		}
         		
+        		return true;
+        		
+        	case R.id.menu_random:
+        		Calendar newCalendar = Calendar.getInstance();
+        		for(int i=0; i<1000; i++)
+        		{
+        		Calendar today = Calendar.getInstance();
+        		int currentYear = today.get(Calendar.YEAR);
+        		int currentMonth = today.get(Calendar.MONTH);
+        		int currentDay = today.get(Calendar.DATE);
+        		
+        		int firstApodYear = 1995;
+        		int firstApodMonth = 5;
+        		int firstApodDay = 20;
+        		
+        		Random rnd = new Random();
+        		int newYear = rnd.nextInt(currentYear-firstApodYear+1)+firstApodYear;
+        		
+        		int minMonth = 0;
+        		int maxMonth = 11;
+        		if(newYear == firstApodYear)
+        			minMonth = firstApodMonth;
+        		if(newYear == currentYear)
+        			maxMonth = currentMonth;
+        		int newMonth = rnd.nextInt(maxMonth-minMonth+1)+minMonth;
+        		
+        		//Calendar newCalendar = Calendar.getInstance();
+        		newCalendar.set(newYear, newMonth, 1);
+        		
+        		int minDay = 1;
+        		int maxDay = newCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        		if(newYear == firstApodYear && newMonth == firstApodMonth)
+        			minDay = firstApodDay;
+        		if(newYear == currentYear && newMonth == currentMonth)
+        			maxDay = currentDay;
+        		int newDay = rnd.nextInt(maxDay-minDay+1)+minDay;
+        		
+        		newCalendar.set(newYear, newMonth, newDay);
+        		}
+        		new APODAsyncLoader(newCalendar, this, (APODApplication)this.getApplication(), 0).execute();
+        				
         		return true;
         		
             default:
