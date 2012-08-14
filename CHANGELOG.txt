@@ -1,3 +1,8 @@
+v1.1 (2012-08-13)
+- Bug fix
+- Select a date at random to discover passed APOD
+- Set the current APOD as your wallpaper
+
 v1.0 (2012-08-09)
 - Release on Google Play under the name "OPEN APOD"
 
