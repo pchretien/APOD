@@ -117,32 +117,35 @@ class APODAsyncLoader extends AsyncTask<Void, Void, Void>
 	{
 		super.onPreExecute();
 		
-		String dateDisplay = "APOD";
-		
-		if(filename != null)
+		if(milliseconds == 0)
 		{
-			if(filename.length() > 0)
+			String dateDisplay = "APOD";
+			
+			if(filename != null)
 			{
-				// Format the date to display from the filename
-				int year = Integer.parseInt(filename.substring(2, 4)) + 2000;
-				if(year > 2094)
-					year -= 100;
-				
-				int month = Integer.parseInt(filename.substring(4, 6));			
-				int day = Integer.parseInt(filename.substring(6, 8));
-				
-				dateDisplay = year + "/" + month + "/" + day;
+				if(filename.length() > 0)
+				{
+					// Format the date to display from the filename
+					int year = Integer.parseInt(filename.substring(2, 4)) + 2000;
+					if(year > 2094)
+						year -= 100;
+					
+					int month = Integer.parseInt(filename.substring(4, 6));			
+					int day = Integer.parseInt(filename.substring(6, 8));
+					
+					dateDisplay = year + "/" + month + "/" + day;
+				}
 			}
+			else if(date != null)
+			{
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+				dateDisplay = sdf.format(date.getTime());
+			}
+			
+			this.progressDialog = ProgressDialog.show(
+					activity, 
+					activity.getResources().getString(R.string.loading), 
+					"Loading "+ dateDisplay);
 		}
-		else if(date != null)
-		{
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-			dateDisplay = sdf.format(date.getTime());
-		}
-		
-		this.progressDialog = ProgressDialog.show(
-				activity, 
-				activity.getResources().getString(R.string.loading), 
-				"Loading "+ dateDisplay);
 	}
 }
