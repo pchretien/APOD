@@ -28,6 +28,7 @@
 package com.basbrun;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 // Custom very very basic HTML parser
@@ -126,5 +127,37 @@ public class APODHtmlParser
 		}
 		
 		return list;
+	}
+	
+	public static Calendar getCurrentDate(String page)
+	{
+		Calendar calendar = Calendar.getInstance();
+		
+		String token = "discuss_apod.php?date=";
+		int datePos = page.indexOf(token);
+		if(datePos > -1)
+		{
+			datePos += token.length();
+			String dateString = page.substring(datePos, datePos+6);
+			
+			// Extract the date form the filename
+			// Format is apYYMMDD.html		
+			int year = Integer.parseInt(dateString.substring(0, 2));
+			
+			// This rule is good until 2094 ... :)
+			if(year > 94)
+				year += 1900;
+			else
+				year += 2000;
+			
+			int month = Integer.parseInt(dateString.substring(2, 4));
+			int day = Integer.parseInt(dateString.substring(4, 6));
+			
+			calendar.set(Calendar.YEAR, year);
+			calendar.set(Calendar.MONTH, month-1);
+			calendar.set(Calendar.DATE, day);
+		}
+		
+		return calendar;
 	}
 }

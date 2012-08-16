@@ -134,6 +134,6 @@ public class APODSearchActivity extends APODBaseActivity
 	public void onListItemClick(ListView l, View v, int position, long id) 
 	{
 		APODSearchItem item = (APODSearchItem)listViewSearchResults.getItemAtPosition(position);
-		new APODAsyncLoader(item.getPagePath(), this, (APODApplication)this.getApplication(), 0).execute();
+		new APODAsyncLoader(null, item.getPagePath(), this, (APODApplication)this.getApplication(), 0).execute();
 	}
 }

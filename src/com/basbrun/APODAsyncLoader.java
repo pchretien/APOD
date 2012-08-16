@@ -34,28 +34,17 @@ class APODAsyncLoader extends AsyncTask<Void, Void, Void>
 	// Ctor
 	public APODAsyncLoader(
 			Calendar date,
+			String filename,
 			Activity activity, 
 			APODApplication app,
 			long milliseconds)
 	{
 		this.date = date;
+		this.filename = filename;
 		this.activity = activity;
 		this.app = app;
 		this.milliseconds = milliseconds;
 	}
-	
-	// Ctor
-		public APODAsyncLoader(
-				String filename,
-				Activity activity, 
-				APODApplication app,
-				long milliseconds)
-		{
-			this.filename = filename;
-			this.activity = activity;
-			this.app = app;
-			this.milliseconds = milliseconds;
-		}
 	
 	// This is where the asyn loading is made. This code runs in
 	// a separate thread. The onPostExecute method is called when the
@@ -67,13 +56,10 @@ class APODAsyncLoader extends AsyncTask<Void, Void, Void>
 		timer = Calendar.getInstance();
 		
 		// Load the APOD for the date received in parameter
-		if(date != null)
-			app.getDataProvider().getAPODByDate(date);
-		else if(filename != null)
+		if(filename != null)
 			app.getDataProvider().getAPODByFilename(filename);
-		else
-			app.getDataProvider().getAPODByFilename(""); // Should load the default page
-		
+		else			
+			app.getDataProvider().getAPODByDate(date);
 		
 		
 		return null;
@@ -131,23 +117,27 @@ class APODAsyncLoader extends AsyncTask<Void, Void, Void>
 	{
 		super.onPreExecute();
 		
-		String dateDisplay;
-		if(date != null)
+		String dateDisplay = "APOD";
+		
+		if(filename != null)
+		{
+			if(filename.length() > 0)
+			{
+				// Format the date to display from the filename
+				int year = Integer.parseInt(filename.substring(2, 4)) + 2000;
+				if(year > 2094)
+					year -= 100;
+				
+				int month = Integer.parseInt(filename.substring(4, 6));			
+				int day = Integer.parseInt(filename.substring(6, 8));
+				
+				dateDisplay = year + "/" + month + "/" + day;
+			}
+		}
+		else if(date != null)
 		{
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 			dateDisplay = sdf.format(date.getTime());
-		}
-		else
-		{
-			// Format the date to display from the filename
-			int year = Integer.parseInt(filename.substring(2, 4)) + 2000;
-			if(year > 2094)
-				year -= 100;
-			
-			int month = Integer.parseInt(filename.substring(4, 6));			
-			int day = Integer.parseInt(filename.substring(6, 8));
-			
-			dateDisplay = year + "/" + month + "/" + day;
 		}
 		
 		this.progressDialog = ProgressDialog.show(

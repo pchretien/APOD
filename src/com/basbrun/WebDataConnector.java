@@ -113,6 +113,9 @@ public class WebDataConnector
 	// Retreive an html file from the cache
 	private String getHtmlFromCache(String filename)
 	{	
+		if(filename == null || filename.length() == 0)
+			return null;
+		
 		try
 		{
 			FileInputStream fstream = new FileInputStream(checkCachingDirectory() + File.separator + filename);
@@ -141,6 +144,9 @@ public class WebDataConnector
 	// Save an html file to the cache
 	private void saveHtmlToCache(String filename, String html)
 	{
+		if(filename == null || filename.length() == 0)
+			return;
+		
 		try 
 		{
 			String fullPath = checkCachingDirectory() + File.separator + filename;

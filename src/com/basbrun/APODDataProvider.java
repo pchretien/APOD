@@ -39,6 +39,8 @@ import android.graphics.Bitmap;
 // as a singleton.
 public class APODDataProvider
 {
+	private Calendar lastAPOD;
+	
 	private APODData apodData = null;	
 	private SharedPreferences preferences = null;
 	private WebDataConnector dataConnector= null;
@@ -48,6 +50,8 @@ public class APODDataProvider
 	
 	public APODDataProvider(SharedPreferences preferences)
 	{
+		lastAPOD = Calendar.getInstance();
+		
 		this.preferences = preferences;
 		dataConnector = new WebDataConnector(APODData.getDomainRoot(), APODData.getCachingDirectory());
 	}
@@ -70,9 +74,11 @@ public class APODDataProvider
 	
 	public APODData getAPODByFilename(String filename)
 	{
-		// Extract the date form the filename
-		// Format is apYYMMDD.html
+		if(filename == null || filename.length() == 0)
+			return getAPODByDate(null);
 		
+		// Extract the date form the filename
+		// Format is apYYMMDD.html		
 		int year = Integer.parseInt(filename.substring(2, 4));
 		
 		// This rule is good until 2094 ... :)
@@ -121,6 +127,21 @@ public class APODDataProvider
 		}
 		else
 		{
+			// Make sure we have the current date ...
+			if(date == null)
+			{
+				date = APODHtmlParser.getCurrentDate(page);
+				lastAPOD = date;
+				
+				if(preferences.getBoolean("caching", true))
+				{
+					// Call it again so the file is cached ..
+					page = dataConnector.GetHtml(
+						preferences.getBoolean("caching", true), 
+						new APODFormatter(date, "ap", "html"));
+				}
+			}
+			
 			// Parse the page to find an <IMG/> element
 			src = APODHtmlParser.FindFirstElementSrc(page, "IMG");
 
@@ -204,6 +225,9 @@ public class APODDataProvider
 			String description,
 			String page) 
 	{
+		if(date == null)
+			return true;
+		
 		// Validate date range
 		if(	date.get(Calendar.YEAR)<1995 || 
 			(date.get(Calendar.YEAR) == 1995 && date.get(Calendar.MONTH) < 5) || 
@@ -217,7 +241,7 @@ public class APODDataProvider
 				page,
 				dataConnector.getDomainRoot() + new APODFormatter(date, "ap", "html").formatFilename(),
 				description,
-				"There are not APOD before June 16th 1995 and for June 17th, 18th and 19th 1995");	
+				"There are no APOD before June 16th 1995 and for June 17th, 18th and 19th 1995");	
 			
 			return false;
 		}
@@ -236,7 +260,7 @@ public class APODDataProvider
 				page,
 				dataConnector.getDomainRoot() + new APODFormatter(date, "ap", "html").formatFilename(),
 				description,
-				"There are not APOD for dates after today");	
+				"Travelling to the future isn't possible yet!");	
 			
 			return false;
 		}
@@ -263,28 +287,31 @@ public class APODDataProvider
 		return list;
 	}
 
-	public List<APODSearchItem> getSearchResults() {
+	public List<APODSearchItem> getSearchResults() 
+	{
 		return searchResults;
 	}
 
-	public void setSearchResults(List<APODSearchItem> searchResults) {
+	public void setSearchResults(List<APODSearchItem> searchResults) 
+	{
 		this.searchResults = searchResults;
 	}
 
-	public String getSearchQuery() {
+	public String getSearchQuery() 
+	{
 		return searchQuery;
 	}
 
-	public void setSearchQuery(String searchQuery) {
+	public void setSearchQuery(String searchQuery) 
+	{
 		this.searchQuery = searchQuery;
 	}
 	
 	public boolean isTodayAPOD()
 	{
-		Calendar today = Calendar.getInstance();
-		int currentYear = today.get(Calendar.YEAR);
-		int currentMonth = today.get(Calendar.MONTH);
-		int currentDay = today.get(Calendar.DATE);
+		int currentYear = lastAPOD.get(Calendar.YEAR);
+		int currentMonth = lastAPOD.get(Calendar.MONTH);
+		int currentDay = lastAPOD.get(Calendar.DATE);
 		
 		int apodYear = apodData.getDate().get(Calendar.YEAR);
 		int apodMonth = apodData.getDate().get(Calendar.MONTH);

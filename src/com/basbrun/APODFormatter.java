@@ -20,14 +20,18 @@ public class APODFormatter implements IWebDataConnectorFormatter
 		this.extension = extension;
 	}
 	
-	public String formatFilename() {
+	public String formatFilename() 
+	{
+		String filename = "";
 		
-		// Check if the picture exist on disk ...
-		String filename = String.format(
-		prefix+"%02d%02d%02d."+extension, 
-		(date.get(Calendar.YEAR)<2000)?date.get(Calendar.YEAR)-1900:date.get(Calendar.YEAR)-2000, 
-		date.get(Calendar.MONTH)+1, 
-		date.get(Calendar.DATE));
+		if(date != null)
+		{
+			filename = String.format(
+			prefix+"%02d%02d%02d."+extension, 
+			(date.get(Calendar.YEAR)<2000)?date.get(Calendar.YEAR)-1900:date.get(Calendar.YEAR)-2000, 
+			date.get(Calendar.MONTH)+1, 
+			date.get(Calendar.DATE));
+		}
 		
 		return filename;
 	}

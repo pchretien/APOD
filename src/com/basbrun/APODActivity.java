@@ -301,7 +301,7 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
         		
         		newCalendar.set(newYear, newMonth, newDay);
         		
-        		new APODAsyncLoader(newCalendar, this, (APODApplication)this.getApplication(), 0).execute();
+        		new APODAsyncLoader(newCalendar, null, this, (APODApplication)this.getApplication(), 0).execute();
         				
         		return true;
         		
@@ -315,7 +315,7 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
 	{
 		Calendar date = (Calendar)apodData.getDate().clone();
 		date.add(Calendar.DATE, 1);
-		new APODAsyncLoader(date, this, (APODApplication)this.getApplication(), 0).execute();
+		new APODAsyncLoader(date, null, this, (APODApplication)this.getApplication(), 0).execute();
 	}
 
 	// Load today's APOD
@@ -323,7 +323,7 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
 	{
 		// Load the APOD
 		Calendar date = GregorianCalendar.getInstance();
-		new APODAsyncLoader(date, this, (APODApplication)this.getApplication(), 0).execute();
+		new APODAsyncLoader(date, "", this, (APODApplication)this.getApplication(), 0).execute();
 	}
 
 	// Load the APOD of the date before the current date
@@ -332,7 +332,7 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
 		// Load the APOD
 		Calendar date = (Calendar)apodData.getDate().clone();
 		date.add(Calendar.DATE, -1);
-		new APODAsyncLoader(date, this, (APODApplication)this.getApplication(), 0).execute();
+		new APODAsyncLoader(date, null, this, (APODApplication)this.getApplication(), 0).execute();
 	}
 
     // Listener for the DatePickerDialog. This date picker is called when selecting @Set Date@ from the
@@ -343,7 +343,7 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
 		{
 			Calendar date = GregorianCalendar.getInstance();
 			date.set(year, monthOfYear, dayOfMonth);
-        	new APODAsyncLoader(date, APODActivity.this, (APODApplication)APODActivity.this.getApplication(), 0).execute();
+        	new APODAsyncLoader(date, null, APODActivity.this, (APODApplication)APODActivity.this.getApplication(), 0).execute();
 		}
     };
 
@@ -406,7 +406,7 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
                 	
                 	Calendar date = (Calendar)apodData.getDate().clone();
                     date.add(Calendar.DATE, 1);
-                    new APODAsyncLoader(date, APODActivity.this, (APODApplication)APODActivity.this.getApplication(), 0).execute();
+                    new APODAsyncLoader(date, null, APODActivity.this, (APODApplication)APODActivity.this.getApplication(), 0).execute();
 
                     // This is a valid fling
                     return true;
@@ -415,7 +415,7 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
                 {
                 	Calendar date = (Calendar)apodData.getDate().clone();
                     date.add(Calendar.DATE, -1);
-                    new APODAsyncLoader(date, APODActivity.this, (APODApplication)APODActivity.this.getApplication(), 0).execute();
+                    new APODAsyncLoader(date, null, APODActivity.this, (APODApplication)APODActivity.this.getApplication(), 0).execute();
 
                     // This is a valid fling
                     return true;
