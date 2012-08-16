@@ -1,3 +1,6 @@
+v1.2 (2012-08-16)
+- Bug Fix: Timezone problems for today's APOD
+
 v1.1 (2012-08-13)
 - Bug fix
 - Select a date at random to discover passed APOD
