@@ -1,10 +1,10 @@
 package com.basbrun;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 //Load the requested APOD asynchronously 
 class APODAsyncWallpaper extends AsyncTask<Void, Void, Void>
@@ -72,11 +72,8 @@ class APODAsyncWallpaper extends AsyncTask<Void, Void, Void>
 	// Called when getAPODByDate() is done
 	@Override
 	protected void onPostExecute(Void result)
-	{
-		new AlertDialog.Builder(activity)
-		.setMessage("   Done   ")
-		.setPositiveButton("OK", null)
-		.show();
+	{		
+		Toast.makeText(APODApplication.getAppContext(), "Wallpaper changed successfully", Toast.LENGTH_SHORT).show();
 		
 		if(progressDialog != null && progressDialog.isShowing())
 		{

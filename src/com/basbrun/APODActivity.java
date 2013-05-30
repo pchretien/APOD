@@ -33,6 +33,7 @@ import java.util.Random;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -87,7 +88,6 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
     public void onStart()
     {
     	super.onStart();
-    	
     	RefreshContent(); 
     }
     
@@ -150,6 +150,7 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
 				null,
 				null);
         webView.setOnTouchListener(gestureListener);
+        imgView.setOnTouchListener(gestureListener);
         
 		switch(apodData.getApodDataType())
     	{
@@ -157,14 +158,12 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
 	    	case IMG:
 	    		imgView.setImageBitmap(apodData.getBitmap());
 	    		imgView.setOnClickListener(onPictureClick);
-	            imgView.setOnTouchListener(gestureListener);
 	    		break;
 	
 	    	// Most of the <iframe/> elements contains YouTube videos
 	    	case IFRAME:
 	    		imgView.setImageResource(R.drawable.play);
-	    		imgView.setOnClickListener(onVideoClick);
-	    		imgView.setOnTouchListener(gestureListener);
+	    		imgView.setOnClickListener(onVideoClick);	    		
 	    		break;
 	
 	    	// Reporting errors to the user ...
@@ -210,7 +209,8 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
 	}
 
 	// Bind XML layout elements to the code.
-	private void bindings() {
+	private void bindings() 
+	{
 		// Bind to the Previous on screen button
         ImageButton previousButton = (ImageButton)this.findViewById(R.id.button_prev);
         previousButton.setOnClickListener(new View.OnClickListener() {

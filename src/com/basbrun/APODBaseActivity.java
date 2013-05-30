@@ -2,22 +2,62 @@ package com.basbrun;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Service;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.Bundle;
+import android.os.IBinder;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class APODBaseActivity extends Activity
 {
 	// Reference to the APODApplication to get access to the APODDataProvider
 	protected APODApplication app = null;
 	
-	// A reference to the current APODData downloaded from the website
+		// A reference to the current APODData downloaded from the website
 	// This data is obtained trough the data provider
 	protected APODData apodData = null;
 	
+	APODService apodService = null;
+	protected ServiceConnection serviceConnection = new ServiceConnection() 
+	{
+		public void onServiceConnected(ComponentName className, IBinder binder) 
+		{
+			apodService = ((APODService.APODServiceBinder) binder).getService();
+		}
+		
+		public void onServiceDisconnected(ComponentName className) 
+		{
+			apodService = null;
+		}
+	 };
+	 
+	 @Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		
+		Intent service = new Intent(APODBaseActivity.this, APODService.class);
+		startService(service);
+		bindService(new Intent(this, APODService.class), serviceConnection, Context.BIND_AUTO_CREATE);
+	}
+	
+	@Override
+	protected void onStop()
+	{
+		super.onStop();
+		
+		if(serviceConnection!=null)
+			this.unbindService(serviceConnection);
+	}
+
 	// This method is called when the Activity is ready to create the menu.
 	// We use the inflater to load an XML menu definition 
     @Override
@@ -73,7 +113,8 @@ public class APODBaseActivity extends Activity
         switch (item.getItemId()) 
         {
 	        // Start the APODPreferencesActivity
-        	case R.id.menu_settings:
+        	case R.id.menu_settings:        		
+        		apodService.getRandomInt();
         		startActivity(new Intent(this, APODPreferences.class));
                 return true;
             
