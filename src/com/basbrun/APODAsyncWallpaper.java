@@ -2,8 +2,10 @@ package com.basbrun;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 //Load the requested APOD asynchronously 
@@ -38,6 +40,11 @@ class APODAsyncWallpaper extends AsyncTask<Void, Void, Void>
 				if(bmp != null)
 				{
 					setWallpaperWithAPOD(bmp);
+					
+					SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+					preferences.edit().putLong(
+							"last_wallpaper_update", 
+							apodData.getDate().getTimeInMillis()/APODUtils.MILLIS_PER_DAY).commit();
 				}
 			}
 			catch(Exception ex)

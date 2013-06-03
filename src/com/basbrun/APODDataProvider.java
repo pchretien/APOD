@@ -97,13 +97,25 @@ public class APODDataProvider
 		
 		return getAPODByDate(calendar);
 	}
+	
+	public boolean isAPODUpToDate(Calendar date)
+	{
+		if( apodData != null && 
+			apodData.getDate().get(Calendar.YEAR) == date.get(Calendar.YEAR) &&
+			apodData.getDate().get(Calendar.MONTH) == date.get(Calendar.MONTH) &&
+			apodData.getDate().get(Calendar.DATE) == date.get(Calendar.DATE))
+		{
+			return true;
+		}
+		
+		return false;
+	}
 
 	// Return the APOD data for a specific day
 	public APODData getAPODByDate(Calendar date)
 	{
-		// If the data currently loaded is the same as the one requested nothing is done
-		if(apodData != null && apodData.getDate().equals(date))
-			return apodData;
+		if(isAPODUpToDate(date))
+			return apodData;		
 	
 		// Initialization
 		String src = null;

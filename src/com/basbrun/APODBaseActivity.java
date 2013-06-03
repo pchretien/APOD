@@ -31,6 +31,8 @@ public class APODBaseActivity extends Activity
 		public void onServiceConnected(ComponentName className, IBinder binder) 
 		{
 			apodService = ((APODService.APODServiceBinder) binder).getService();
+			if(apodService != null)
+				apodService.getRandomInt();
 		}
 		
 		public void onServiceDisconnected(ComponentName className) 
@@ -44,9 +46,8 @@ public class APODBaseActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		
-		Intent service = new Intent(APODBaseActivity.this, APODService.class);
-		startService(service);
-		bindService(new Intent(this, APODService.class), serviceConnection, Context.BIND_AUTO_CREATE);
+		// Schedule the service to start when the application is loaded ...
+		APODService.ScheduleService(this, 10*1000, 30*1000);
 	}
 	
 	@Override
@@ -54,8 +55,11 @@ public class APODBaseActivity extends Activity
 	{
 		super.onStop();
 		
-		if(serviceConnection!=null)
+		if(apodService != null)
+		{
 			this.unbindService(serviceConnection);
+			apodService = null;
+		}
 	}
 
 	// This method is called when the Activity is ready to create the menu.
@@ -113,8 +117,10 @@ public class APODBaseActivity extends Activity
         switch (item.getItemId()) 
         {
 	        // Start the APODPreferencesActivity
-        	case R.id.menu_settings:        		
-        		apodService.getRandomInt();
+        	case R.id.menu_settings:
+        		// Try to bind to the service ...
+        		bindService(new Intent(this, APODService.class), serviceConnection, Context.BIND_AUTO_CREATE);	
+        		
         		startActivity(new Intent(this, APODPreferences.class));
                 return true;
             

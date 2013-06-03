@@ -97,7 +97,8 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
         getData();
         
         // Check for errors in the returned apodData object
-        checkForErrors();
+        if( checkForErrors() )
+        	return;
         
         // Set the title of the application for the date of the current APOD
         changeTitle();
@@ -185,7 +186,7 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
 
 	// Validate the content of the apodData object and display error messages 
 	// if required.
-	private void checkForErrors() 
+	private boolean checkForErrors() 
 	{
 		imgView.setVisibility(View.VISIBLE);
     	webView.setVisibility(View.VISIBLE);
@@ -205,7 +206,11 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
         	
         	imgView.setVisibility(View.INVISIBLE);
         	webView.setVisibility(View.INVISIBLE);
+        	
+        	return true;
         }
+        
+        return false;
 	}
 
 	// Bind XML layout elements to the code.
@@ -255,6 +260,8 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
 	        // Load the APOD for a specific date using the DatePickerDialog
         	case R.id.menu_set_date:
         		Calendar calendar = apodData.getDate();
+        		if(calendar == null)
+        			calendar = Calendar.getInstance();
         		
         		DatePickerDialog datePicker = new DatePickerDialog(
         				this,

@@ -20,11 +20,11 @@ public class APODPreferences extends PreferenceActivity
 	    super.onCreate(savedInstanceState);
 	    this.addPreferencesFromResource(R.xml.preferences);
 	    
-	    // The Clear Cache button is not realy a button ... We bind to the
+	    // The Clear Cache button is not really a button ... We bind to the
 	    // Preference element and add an onClick callback to display a confirmation
 	    // message to the user
-	    Preference button = (Preference)findPreference("clear_cache");
-	    button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() 
+	    Preference clearCacheButton = (Preference)findPreference("clear_cache");
+	    clearCacheButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() 
 	    {
             public boolean onPreferenceClick(Preference preference) 
             {             	
@@ -32,9 +32,19 @@ public class APODPreferences extends PreferenceActivity
                 return true;
             }
         });
+	    
+	    Preference autoWallpaperButtin = (Preference)findPreference("auto_wallpaper");
+	    autoWallpaperButtin.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() 
+	    {
+            public boolean onPreferenceClick(Preference preference) 
+            {             	
+            	// Schedule a wallpaper download in a few seconds ...
+                return true;
+            }
+        });
 	}
 	
-	// Creat the dialog boxes
+	// Create the dialog boxes
 	@Override
 	protected Dialog onCreateDialog(int id) 
 	{

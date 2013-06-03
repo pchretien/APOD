@@ -56,11 +56,10 @@ class APODAsyncLoader extends AsyncTask<Void, Void, Void>
 		timer = Calendar.getInstance();
 		
 		// Load the APOD for the date received in parameter
-		if(filename != null)
+		if(filename != null && filename.length() > 0)
 			app.getDataProvider().getAPODByFilename(filename);
 		else			
 			app.getDataProvider().getAPODByDate(date);
-		
 		
 		return null;
 	}

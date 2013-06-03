@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-    <CheckBoxPreference 
-        android:key="caching" 
-        android:enabled="true" 
-        android:summaryOff="Check to turn caching On" 
-        android:title="Caching" 
-        android:summaryOn="Uncheck to turn caching Off"/>
-    <Preference android:key="clear_cache" android:summary="Click to clear the cache" android:title="Clear Cache"/>	
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Automatic Wallpaper" android:key="wallpaper" android:summary="Automatic Wallpaper changes your wallpaper automatically when a new APOD is available">
+        <CheckBoxPreference android:key="auto_wallpaper" android:title="Automatic Wallpaper" android:enabled="true" android:summary="Automatic Wallpaper changes your wallpaper automatically when a new APOD is available"/><CheckBoxPreference android:key="auto_wallpaper_wifi_only" android:summary="Will download the current wallpaper only if WiFi connectivity is activated" android:title="Automatic Wallpaper Update on WiFi Only" android:enabled="true" android:dependency="auto_wallpaper"/></PreferenceCategory>
+    
+    
+    
+    
+    <PreferenceCategory android:title="Caching" android:key="caching"><CheckBoxPreference android:key="caching" android:enabled="true" android:title="Caching Activation" android:summary="Save pictures on the device to improve performances"/><Preference android:key="clear_cache" android:summary="Click to erase images files from the cache" android:title="Clear Cache" /></PreferenceCategory>	
 </PreferenceScreen>
