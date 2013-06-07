@@ -24,42 +24,17 @@ public class APODBaseActivity extends Activity
 		// A reference to the current APODData downloaded from the website
 	// This data is obtained trough the data provider
 	protected APODData apodData = null;
-	
-	APODService apodService = null;
-	protected ServiceConnection serviceConnection = new ServiceConnection() 
-	{
-		public void onServiceConnected(ComponentName className, IBinder binder) 
-		{
-			apodService = ((APODService.APODServiceBinder) binder).getService();
-			if(apodService != null)
-				apodService.getRandomInt();
-		}
-		
-		public void onServiceDisconnected(ComponentName className) 
-		{
-			apodService = null;
-		}
-	 };
 	 
 	 @Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		super.onCreate(savedInstanceState);
-		
-		// Schedule the service to start when the application is loaded ...
-		APODService.ScheduleService(this, 10*1000, 30*1000);
+		super.onCreate(savedInstanceState);		
 	}
 	
 	@Override
 	protected void onStop()
 	{
 		super.onStop();
-		
-		if(apodService != null)
-		{
-			this.unbindService(serviceConnection);
-			apodService = null;
-		}
 	}
 
 	// This method is called when the Activity is ready to create the menu.
@@ -118,9 +93,6 @@ public class APODBaseActivity extends Activity
         {
 	        // Start the APODPreferencesActivity
         	case R.id.menu_settings:
-        		// Try to bind to the service ...
-        		bindService(new Intent(this, APODService.class), serviceConnection, Context.BIND_AUTO_CREATE);	
-        		
         		startActivity(new Intent(this, APODPreferences.class));
                 return true;
             

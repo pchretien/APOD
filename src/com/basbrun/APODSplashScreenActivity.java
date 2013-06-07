@@ -15,7 +15,6 @@ public class APODSplashScreenActivity extends Activity {
 		
 		// If I pass null as Calendar I receive an exception on the call to execute() !!!!!
 		Calendar calendar = Calendar.getInstance();
-		new APODAsyncLoader(calendar, null, this, (APODApplication)this.getApplication(), 3000).execute();
+		new APODAsyncLoader(calendar, null, this, (APODApplication)this.getApplication(), 2000).execute();
 	}
-
 }

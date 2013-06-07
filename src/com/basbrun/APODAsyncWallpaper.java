@@ -40,11 +40,6 @@ class APODAsyncWallpaper extends AsyncTask<Void, Void, Void>
 				if(bmp != null)
 				{
 					setWallpaperWithAPOD(bmp);
-					
-					SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
-					preferences.edit().putLong(
-							"last_wallpaper_update", 
-							apodData.getDate().getTimeInMillis()/APODUtils.MILLIS_PER_DAY).commit();
 				}
 			}
 			catch(Exception ex)

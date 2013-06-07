@@ -29,6 +29,7 @@ package com.basbrun;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.Random;
 
 import android.app.AlertDialog;

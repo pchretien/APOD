@@ -52,6 +52,9 @@ public class APODApplication extends Application
 		
 		APODApplication.context = getApplicationContext();
 		
+		// Schedule the service to start when the application is loaded ...
+		APODService.ScheduleService(APODApplication.context);
+		
 		// Get the preferences of the user to construct the APODDataProvider.
 		// The preferences are used to determine if the caching is enabled.
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);

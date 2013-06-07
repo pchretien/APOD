@@ -10,6 +10,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Binder;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -77,7 +78,7 @@ public class APODService extends Service
 				return returnedFlag;
 			}
 			
-			APODData apodData = dataProvider.getAPODByDate(GregorianCalendar.getInstance());
+			APODData apodData = dataProvider.getAPODByDate(today);
 			if(apodData == null)
 			{
 				Log.e(APODUtils.APOD_TAG, "APODService.onStartCommand(): Failed to load APOD");
@@ -86,11 +87,15 @@ public class APODService extends Service
 		
 			// Update the wallpaper
 			android.app.WallpaperManager wallpaperManager = android.app.WallpaperManager.getInstance(APODService.this);
-			wallpaperManager.setBitmap(apodData.getBitmap());
-			
-			preferences.edit().putLong(
-					"last_wallpaper_update", 
-					apodData.getDate().getTimeInMillis()/APODUtils.MILLIS_PER_DAY).commit();
+			Bitmap apodBitmap = apodData.getBitmap();
+			if(apodBitmap != null)
+			{
+				wallpaperManager.setBitmap(apodData.getBitmap());
+			}
+			else
+			{
+				Log.i(APODUtils.APOD_TAG, "The APOD for today is not a picture");
+			}
 		}
 		catch(Exception ex)
 		{
@@ -107,28 +112,9 @@ public class APODService extends Service
 		return binder;
 	}
 	
-	public static void ScheduleService(Context context, int start, long repeat)
+	public static void ScheduleService(Context context)
 	{
-		// Starting time ... 30 seconds after this line is executed...
-	    Calendar calendarStartTime = Calendar.getInstance();
-	    calendarStartTime.add(Calendar.MILLISECOND, start);
-	    
-	    // Get a reference to the AlarmManager system service
-		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-	    
-		// The definition of the service to start ...
-		Intent serviceIntent = new Intent(context, APODStartReceiver.class);
-	    PendingIntent servicePendingIntend = PendingIntent.getBroadcast(context, 0, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-	    	    
-	    // Clear previously registered events ...
-	    alarmManager.cancel(servicePendingIntend);
-	    
-	    // Add the service to the AlarmManager 
-	    alarmManager.setInexactRepeating(
-	    		AlarmManager.RTC_WAKEUP, 
-	    		calendarStartTime.getTimeInMillis(), 
-	    		repeat, 
-	    		servicePendingIntend);
+		new APODAsyncServiceScheduler(context, 30*1000, 30*1000).execute();
 	}
 
 	public int getRandomInt()

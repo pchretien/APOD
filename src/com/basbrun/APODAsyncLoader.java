@@ -61,6 +61,16 @@ class APODAsyncLoader extends AsyncTask<Void, Void, Void>
 		else			
 			app.getDataProvider().getAPODByDate(date);
 		
+		// Wait until the splash screen delay expires
+		try
+		{
+			while(Calendar.getInstance().getTimeInMillis() - timer.getTimeInMillis() < milliseconds)
+				Thread.sleep(100);
+		}
+		catch(Exception ex)
+		{			
+		}
+		
 		return null;
 	}
 
@@ -77,16 +87,6 @@ class APODAsyncLoader extends AsyncTask<Void, Void, Void>
 			catch(Exception ex)
 			{
 			}
-		}
-		
-		// Wait until the splash screen delay expires
-		try
-		{
-			while(Calendar.getInstance().getTimeInMillis() - timer.getTimeInMillis() < milliseconds)
-				Thread.sleep(100);
-		}
-		catch(Exception ex)
-		{			
 		}
 
 		if(activity != null )
