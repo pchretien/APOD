@@ -11,6 +11,8 @@ public class APODStartReceiver extends BroadcastReceiver
 	@Override
 	public void onReceive(Context context, Intent intent) 
 	{
+		Log.d(APODUtils.APOD_TAG, "APODStartReceiver.onReceive");
+		
 		Intent service = new Intent(context, APODService.class);
 	    context.startService(service);
 	}

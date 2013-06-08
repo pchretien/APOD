@@ -45,6 +45,8 @@ public class APODService extends Service
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId)
 	{
+		Log.d(APODUtils.APOD_TAG, "APODService.onStartCommand()");
+		
 		int returnedFlag = Service.START_STICKY;
 		
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);

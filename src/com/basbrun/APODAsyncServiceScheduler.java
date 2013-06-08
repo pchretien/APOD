@@ -39,7 +39,7 @@ public class APODAsyncServiceScheduler extends AsyncTask<Void, Void, Void>
 	protected Void doInBackground(Void... params)
 	{
 		Log.d(APODUtils.APOD_TAG, "APODAsyncServiceScheduler.doInBackground");
-		
+		/*
 		// Starting time ... 30 seconds after this line is executed...
 	    Calendar calendarStartTime = Calendar.getInstance();
 	    calendarStartTime.add(Calendar.MILLISECOND, start);
@@ -60,7 +60,16 @@ public class APODAsyncServiceScheduler extends AsyncTask<Void, Void, Void>
 	    		calendarStartTime.getTimeInMillis(), 
 	    		repeat, 
 	    		servicePendingIntend);
-	    
+	    */
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR_OF_DAY, 6);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		Intent serviceIntent = new Intent(context, APODStartReceiver.class);
+	    PendingIntent servicePendingIntend = PendingIntent.getBroadcast(context, 0, serviceIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+	    am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, servicePendingIntend);
 		return null;
 	}
 
