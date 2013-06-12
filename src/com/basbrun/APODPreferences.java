@@ -3,9 +3,12 @@ package com.basbrun;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 
 // This class is the application Preferences page activity
 public class APODPreferences extends PreferenceActivity 
@@ -13,6 +16,8 @@ public class APODPreferences extends PreferenceActivity
 	/** Called when the activity is first created. */
 	private static final int CLEAR_CACHE_ALERT = 1;
 	private static final int CLEAR_CACHE_ALERT_DONE = 2;
+	
+	private OnSharedPreferenceChangeListener sharedPreferencesListener;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
@@ -42,6 +47,21 @@ public class APODPreferences extends PreferenceActivity
                 return true;
             }
         });
+	    
+	    sharedPreferencesListener = new OnSharedPreferenceChangeListener()
+	    {
+	    	public void onSharedPreferenceChanged(SharedPreferences prefs, String key)
+	    	{
+	    		if(key.equalsIgnoreCase("preferences_start_time"))
+	    		{
+	    			// Reschedule the service ...
+	    			APODService.ScheduleService(APODApplication.getAppContext());
+	    		}
+	    	}
+	    };
+	    
+	    SharedPreferences  preferences = PreferenceManager.getDefaultSharedPreferences(this);
+	    preferences.registerOnSharedPreferenceChangeListener(sharedPreferencesListener);
 	}
 	
 	// Create the dialog boxes

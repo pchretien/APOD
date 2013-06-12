@@ -44,10 +44,9 @@ public class APODService extends Service
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId)
-	{
-		Log.d(APODUtils.APOD_TAG, "APODService.onStartCommand()");
-		
+	{	
 		int returnedFlag = Service.START_STICKY;
+		Log.d(APODUtils.APOD_TAG, "APODService.onStartCommand()");
 		
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		boolean runAutoWallpaper = preferences.getBoolean("auto_wallpaper", false);
@@ -71,15 +70,7 @@ public class APODService extends Service
 			if(dataProvider == null)
 				dataProvider = new APODDataProvider(preferences);
 		
-			Calendar today = Calendar.getInstance();
-			
-			long lastUpdate = preferences.getLong("last_wallpaper_update", 0);
-			if(today.getTimeInMillis()/APODUtils.MILLIS_PER_DAY == lastUpdate)
-			{
-				Log.d(APODUtils.APOD_TAG, "APODService.onStartCommand(): Current wallpaper is up to date");
-				return returnedFlag;
-			}
-			
+			Calendar today = Calendar.getInstance();			
 			APODData apodData = dataProvider.getAPODByDate(today);
 			if(apodData == null)
 			{
@@ -116,7 +107,7 @@ public class APODService extends Service
 	
 	public static void ScheduleService(Context context)
 	{
-		new APODAsyncServiceScheduler(context, 30*1000, 30*1000).execute();
+		new APODAsyncServiceScheduler(context).execute();
 	}
 
 	public int getRandomInt()
