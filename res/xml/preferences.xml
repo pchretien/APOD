@@ -9,7 +9,8 @@
             android:showDefault="true"
             android:defaultValue="08:00"
             android:summary="When to download wallpaper"
-            android:title="Time"/>   
+            android:title="Time"/>
+    	<CheckBoxPreference android:key="random_wallpaper" android:title="Random APOD" android:summary="Set wallpaper to a random APOD" android:enabled="true"/>   
     </PreferenceCategory>
     <PreferenceCategory android:title="Caching" android:key="caching">
         <CheckBoxPreference android:key="caching" android:enabled="true" android:title="Caching Activation" android:summary="Saves pictures on the device"/><Preference android:key="clear_cache" android:summary="Click to erase images from the cache" android:title="Clear Cache" />

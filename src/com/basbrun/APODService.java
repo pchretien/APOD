@@ -70,12 +70,32 @@ public class APODService extends Service
 			if(dataProvider == null)
 				dataProvider = new APODDataProvider(preferences);
 		
-			Calendar today = Calendar.getInstance();			
-			APODData apodData = dataProvider.getAPODByDate(today);
+			Calendar dateTime = Calendar.getInstance();	
+			boolean randomWallpaper = preferences.getBoolean("random_wallpaper", false);
+			if(randomWallpaper)
+				dateTime = APODUtils.getRandomApodDate();
+			
+			APODData apodData = dataProvider.getAPODByDate(dateTime);
 			if(apodData == null)
 			{
 				Log.e(APODUtils.APOD_TAG, "APODService.onStartCommand(): Failed to load APOD");
 				return returnedFlag;
+			}
+			
+			int safetyCounter = 0;
+			while(randomWallpaper && apodData.getBitmap() == null)
+			{
+				dateTime = APODUtils.getRandomApodDate();
+				apodData = dataProvider.getAPODByDate(dateTime);
+				
+				if(apodData == null)
+				{
+					Log.e(APODUtils.APOD_TAG, "APODService.onStartCommand(): Failed to load APOD");
+					return returnedFlag;
+				}
+				
+				if(safetyCounter++ > 5)
+					break;
 			}
 		
 			// Update the wallpaper
