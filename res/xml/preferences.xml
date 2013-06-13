@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Automatic Wallpaper" android:key="wallpaper" android:summary="Automatic Wallpaper changes your wallpaper automatically when a new APOD is available">
-        <CheckBoxPreference android:key="auto_wallpaper" android:title="Automatic Wallpaper" android:enabled="true" android:summary="Automatic Wallpaper changes your wallpaper automatically when a new APOD is available"/>
-        <CheckBoxPreference android:key="auto_wallpaper_wifi_only" android:summary="Will download the current wallpaper only if WiFi connectivity is activated" android:title="Automatic Wallpaper Update on WiFi Only" android:enabled="true" android:dependency="auto_wallpaper"/>
+    <PreferenceCategory android:title="Automatic Wallpaper" android:key="wallpaper" android:summary="Changes your wallpaper daily">
+        <CheckBoxPreference android:key="auto_wallpaper" android:title="Automatic Wallpaper" android:enabled="true" android:summary="Activate Automatic Wallpaper"/>
+        <CheckBoxPreference android:key="auto_wallpaper_wifi_only" android:summary="Download wallpaper on WiFi only" android:title="Automatic Wallpaper Update on WiFi Only" android:enabled="true" android:dependency="auto_wallpaper"/>
     	<com.basbrun.TimePreference
     	    android:persistent="true"
             android:key="preferences_start_time"
             android:showDefault="true"
             android:defaultValue="08:00"
-            android:summary="When to look for new APOD"
+            android:summary="When to download wallpaper"
             android:title="Time"/>   
     </PreferenceCategory>
     <PreferenceCategory android:title="Caching" android:key="caching">
-        <CheckBoxPreference android:key="caching" android:enabled="true" android:title="Caching Activation" android:summary="Save pictures on the device to improve performances"/><Preference android:key="clear_cache" android:summary="Click to erase images files from the cache" android:title="Clear Cache" />
+        <CheckBoxPreference android:key="caching" android:enabled="true" android:title="Caching Activation" android:summary="Saves pictures on the device"/><Preference android:key="clear_cache" android:summary="Click to erase images from the cache" android:title="Clear Cache" />
     </PreferenceCategory>	
 </PreferenceScreen>
