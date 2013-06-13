@@ -280,6 +280,12 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
         				
         		return true;
         		
+        	case R.id.load_wallpaper:
+        		Calendar wpDate = APODUtils.getWallpaperDate(getApplicationContext());       		
+        		new APODAsyncLoader(wpDate, null, this, (APODApplication)this.getApplication(), 0).execute();
+        				
+        		return true;
+        		
             default:
                 return super.onOptionsItemSelected(item);
         }

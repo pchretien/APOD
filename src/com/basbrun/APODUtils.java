@@ -7,8 +7,10 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
 
 public class APODUtils 
 {
@@ -86,5 +88,32 @@ public class APODUtils
 		
 		newCalendar.set(newYear, newMonth, newDay);
 		return newCalendar;
+	}
+	
+	public static void SaveLastWallpaperDate(Context context, Calendar dateTime)
+	{
+		int year = dateTime.get(Calendar.YEAR);
+		int month = dateTime.get(Calendar.MONTH);
+		int date = dateTime.get(Calendar.DATE);
+		
+		String dateTimeToString = String.format("%d/%d/%d", year, month, date);
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+		preferences.edit().putString("wallpaper_date", dateTimeToString).commit();
+	}
+	
+	public static Calendar getWallpaperDate(Context context)
+	{
+		Calendar wallpaperDate = Calendar.getInstance();
+		
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+		String dateTimeToString = preferences.getString("wallpaper_date", null);
+		if(dateTimeToString == null)
+			return wallpaperDate;
+		
+		wallpaperDate.set(Calendar.YEAR,  Integer.parseInt(dateTimeToString.split("/")[0]));
+		wallpaperDate.set(Calendar.MONTH,  Integer.parseInt(dateTimeToString.split("/")[1]));
+		wallpaperDate.set(Calendar.DATE,  Integer.parseInt(dateTimeToString.split("/")[2]));
+		
+		return wallpaperDate;
 	}
 }

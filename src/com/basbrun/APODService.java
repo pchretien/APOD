@@ -104,6 +104,7 @@ public class APODService extends Service
 			if(apodBitmap != null)
 			{
 				wallpaperManager.setBitmap(apodData.getBitmap());
+				APODUtils.SaveLastWallpaperDate(APODApplication.getAppContext(), apodData.getDate());
 			}
 			else
 			{

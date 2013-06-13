@@ -40,6 +40,7 @@ class APODAsyncWallpaper extends AsyncTask<Void, Void, Void>
 				if(bmp != null)
 				{
 					setWallpaperWithAPOD(bmp);
+					APODUtils.SaveLastWallpaperDate(APODApplication.getAppContext(), apodData.getDate());
 				}
 			}
 			catch(Exception ex)
