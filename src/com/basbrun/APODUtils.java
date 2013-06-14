@@ -2,11 +2,8 @@ package com.basbrun;
 
 import java.util.Calendar;
 import java.util.Random;
-
-import android.app.AlarmManager;
-import android.app.PendingIntent;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -90,6 +87,7 @@ public class APODUtils
 		return newCalendar;
 	}
 	
+	@SuppressLint("DefaultLocale")
 	public static void SaveLastWallpaperDate(Context context, Calendar dateTime)
 	{
 		int year = dateTime.get(Calendar.YEAR);

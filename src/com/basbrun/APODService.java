@@ -1,11 +1,8 @@
 package com.basbrun;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Random;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;

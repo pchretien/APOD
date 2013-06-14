@@ -29,12 +29,9 @@ package com.basbrun;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.Random;
-
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -53,7 +50,6 @@ import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.basbrun.APODData.ApodContentType;
 
 // APODActivity is the main application activity. The APOD are displayed trough
@@ -175,6 +171,7 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
 	}
 
     // Change the Activity title to the date of the current APOD ...
+	@SuppressLint("DefaultLocale")
 	private void changeTitle() 
 	{		
         String title = String.format(
