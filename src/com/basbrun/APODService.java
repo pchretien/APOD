@@ -45,7 +45,24 @@ public class APODService extends Service
 		int returnedFlag = Service.START_STICKY;
 		Log.d(APODUtils.APOD_TAG, "APODService.onStartCommand()");
 		
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		Calendar now = Calendar.getInstance();
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		String time = preferences.getString("preferences_start_time", "08:00");
+		
+		int hour = Integer.parseInt(time.split(":")[0]);
+		int minutes = Integer.parseInt(time.split(":")[1]);
+				
+		Calendar wallPaperTime = Calendar.getInstance();
+		wallPaperTime.set(Calendar.HOUR_OF_DAY, hour);
+		wallPaperTime.set(Calendar.MINUTE, minutes);
+		wallPaperTime.set(Calendar.SECOND, 0);
+		wallPaperTime.set(Calendar.MILLISECOND, 0);
+		
+		// If not the right time ... return
+		if(	now.getTimeInMillis() - wallPaperTime.getTimeInMillis() > 1000*60 ||
+			now.getTimeInMillis() - wallPaperTime.getTimeInMillis() < 0)
+			return returnedFlag;
+		
 		boolean runAutoWallpaper = preferences.getBoolean("auto_wallpaper", false);
 		if(!runAutoWallpaper)
 		{
