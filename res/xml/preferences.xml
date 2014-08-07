@@ -2,15 +2,16 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="Automatic Wallpaper" android:key="wallpaper" android:summary="Changes your wallpaper daily">
         <CheckBoxPreference android:key="auto_wallpaper" android:title="Automatic Wallpaper" android:enabled="true" android:summary="Activate Automatic Wallpaper"/>
-        <CheckBoxPreference android:key="auto_wallpaper_wifi_only" android:summary="Download wallpaper on WiFi only" android:title="Automatic Wallpaper Update on WiFi Only" android:enabled="true" android:dependency="auto_wallpaper"/>
-    	<com.basbrun.TimePreference
+        <CheckBoxPreference android:key="auto_wallpaper_wifi_only" android:summary="Download wallpaper on WiFi only" android:title="Automatic Wallpaper Update on WiFi Only" android:enabled="true" android:dependency="auto_wallpaper"/><com.basbrun.TimePreference
     	    android:persistent="true"
             android:key="preferences_start_time"
             android:showDefault="true"
-            android:defaultValue="08:00"
+            android:defaultValue="06:00"
             android:summary="When to download wallpaper"
-            android:title="Time"/>
-    	<CheckBoxPreference android:key="random_wallpaper" android:title="Random APOD" android:summary="Set wallpaper to a random APOD" android:enabled="true"/>   
+            android:title="Time"
+            android:dependency="auto_wallpaper"/>
+    	<CheckBoxPreference android:key="random_wallpaper" android:title="Random APOD" android:summary="Set wallpaper to a random APOD" android:enabled="true" android:dependency="auto_wallpaper"/>
+    	   
     </PreferenceCategory>
     <PreferenceCategory android:title="Caching" android:key="caching">
         <CheckBoxPreference android:key="caching" android:enabled="true" android:title="Caching Activation" android:summary="Saves pictures on the device"/><Preference android:key="clear_cache" android:summary="Click to erase images from the cache" android:title="Clear Cache" />

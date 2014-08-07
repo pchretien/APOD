@@ -145,7 +145,7 @@ public class APODActivity extends APODBaseActivity //implements OnClickListener
         webView.loadDataWithBaseURL(app.getDataProvider().getAPODRoot(),
 				apodData.getDescription(),
 				"text/html",
-				null,
+				"ISO-8859-1",
 				null);
         webView.setOnTouchListener(gestureListener);
         imgView.setOnTouchListener(gestureListener);

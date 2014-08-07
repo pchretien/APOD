@@ -83,7 +83,7 @@ public class WebDataConnector
         {
         	URL url = new URL(domainRoot + filename);
         	InputStream is = url.openStream();
-        	InputStreamReader isr = new InputStreamReader(is);
+        	InputStreamReader isr = new InputStreamReader(is, "ISO-8859-1");
         	BufferedReader br = new BufferedReader(isr);
 
         	String line = "";

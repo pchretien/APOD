@@ -62,7 +62,7 @@ public class APODHtmlParser
 
     	start = page.substring(start).toUpperCase().indexOf(">")+start+1;
     	int stop = page.substring(start).toUpperCase().indexOf("<HR>")+start;
-    	page = "<html>" + page.substring(start, stop) + "</html>";
+    	page = "<!DOCTYPE html><html><head></head>" + page.substring(start, stop) + "</html>";
     	
     	page = page.replace("<a href", " <a href");
     	page = page.replace("</a>", "</a> ");

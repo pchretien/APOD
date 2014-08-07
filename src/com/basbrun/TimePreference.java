@@ -134,4 +134,16 @@ public class TimePreference extends DialogPreference {
         lastHour=Integer.parseInt(timeParts[0]);
         lastMinute=Integer.parseInt(timeParts[1]);;
     }
+
+	@Override
+	public void setDependency(String dependencyKey)
+	{
+		super.setDependency(dependencyKey);
+	}
+
+	@Override
+	public String getDependency()
+	{
+		return super.getDependency();
+	}
 }
